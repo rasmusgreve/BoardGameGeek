@@ -1,4 +1,0 @@
-BoardGameGeek
-=============
-
-BoardGameGeek datamining project
