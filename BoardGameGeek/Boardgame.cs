@@ -14,6 +14,7 @@ namespace BoardGameGeek
             var xd = new XmlDocument();
             xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + 25292 + "&stats=1&ratingcomments=1&pagesize=100&page=1");
             Console.WriteLine(ParseXml(xd));
+            Console.ReadLine();
         }
 
         public static Boardgame ParseXml(XmlDocument d)
