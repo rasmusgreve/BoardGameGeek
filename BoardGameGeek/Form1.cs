@@ -21,26 +21,24 @@ namespace BoardGameGeek
         private void button1_Click(object sender, EventArgs e)
         {
             XmlDocument xd = new XmlDocument();
-            string id = textBox1.Text;
-            xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id="+id+"&stats=1&ratingcomments=1&pagesize=100&page=1");
-            foreach (XmlNode n in xd.ChildNodes)
+            int id = 1, id_to = 2;
+            int.TryParse(textBox1.Text, out id);
+            int.TryParse(textBox2.Text, out id_to);
+            for (int i = id; i < id_to; i++)
             {
-                if (n.Name.Equals("items"))
-                {
-                    foreach (XmlNode nn in n.ChildNodes)
-                    {
-                        foreach (XmlNode nnn in nn.ChildNodes)
-                        {
-                            if (nnn.Attributes["value"] != null)
-                                Console.WriteLine(nnn.Name + " - " + nnn.Attributes["value"].Value);
-                            else
-                                Console.WriteLine(nnn.Name);
-                        }
-                    }
-                }
+                WebClient webClient = new WebClient();
+                webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
+                webClient.DownloadFileAsync(new Uri("http://www.boardgamegeek.com/xmlapi2/thing?id=" + i + "&stats=1&ratingcomments=1&pagesize=100&page=1"), @"xml/thing_" + i + ".txt", i);
+                /*xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + i + "&stats=1&ratingcomments=1&pagesize=100&page=1");
+                xd.Save("xml/thing_" + i + ".xml");
+                Console.WriteLine("Done with item: " + i);*/
             }
-            
-            
+            MessageBox.Show("All started");
+        }
+
+        private void Completed(object sender, AsyncCompletedEventArgs e)
+        {
+            Console.WriteLine("Done with item: " + e.UserState);
         }
     }
 }
