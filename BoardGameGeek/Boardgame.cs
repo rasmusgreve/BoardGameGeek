@@ -13,6 +13,7 @@ namespace BoardGameGeek
     {
         private static StreamWriter _fileWriter;
         private static string[] _burstResult;
+        const int RANGE = 200;
         const int BurstSize = 10;
         public static void Main()
         {
@@ -33,12 +34,13 @@ namespace BoardGameGeek
             
             _burstResult = new string[BurstSize];
             var ts = new Thread[BurstSize];
-            _fileWriter = File.AppendText("data.csv");
+            _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}",
+        DateTime.Now) + ".csv");
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 1; i <= 200000; i+=BurstSize)
+            for (int i = 1; i <= RANGE; i+=BurstSize)
             {
-                break; //@@@@@@@ Do nothing! The file has been made
+                //break; //@@@@@@@ Do nothing! The file has been made
                 //Start threads
                 for (int j = i; j < i + BurstSize; j++)
                 {
@@ -59,6 +61,24 @@ namespace BoardGameGeek
                 _fileWriter.Flush();
             }
             _fileWriter.Close();
+
+            // id names
+            StreamWriter ids = File.CreateText("linkIdNames.txt");
+            var dicts = new Dictionary<int, string>[] { categoryNames, mechanicNames, familyNames, designerNames, artistNames, publisherNames };
+            string[] headers = new string[]{"categories","mechanics","families","designers","artists","publishers"};
+            for(int i = 0; i < dicts.Length; i++)
+            {
+                var dict = dicts[i];
+                ids.WriteLine(headers[i]);
+                foreach (var kv in dict.OrderBy(kv => kv.Key))
+                {
+                    ids.WriteLine(kv.Key + " = " + kv.Value);
+                }
+                ids.WriteLine("");
+            }
+            ids.Flush();
+            ids.Close();
+
             Console.WriteLine("All done! " + sw.ElapsedMilliseconds/1000 + "s");
             Console.ReadLine();
         }
@@ -87,13 +107,20 @@ namespace BoardGameGeek
                 xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&stats=1&pagesize=100&page=1&type=boardgame");
                 var game = ParseXml(xd);
                 if (game == null) return null;
-                return game.ToCSV();
+                return game.ToEmilCSV();
             }
             catch
             {
                 return null;
             }
         }
+
+        private static Dictionary<int, string> categoryNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> mechanicNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> familyNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> designerNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> artistNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> publisherNames = new Dictionary<int, string>();
 
         public static Boardgame ParseXml(XmlDocument d)
         {
@@ -159,17 +186,66 @@ namespace BoardGameGeek
             var categoriesNodes = d.SelectNodes("/items/item/link[@type='boardgamecategory']");
             if (categoriesNodes != null)
                 foreach (XmlNode node in categoriesNodes)
-                    result.Categories.Add(int.Parse(node.Attributes["id"].Value));
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Categories.Add(id);
+                    categoryNames[id] = name;
+                }
 
             var mechanicsNodes = d.SelectNodes("/items/item/link[@type='boardgamemechanic']");
             if (mechanicsNodes != null)
                 foreach (XmlNode node in mechanicsNodes)
-                    result.Mechanics.Add(int.Parse(node.Attributes["id"].Value));
-
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Mechanics.Add(id);
+                    mechanicNames[id] = name;
+                }
+                    
+            // board game family
             var familyNodes = d.SelectNodes("/items/item/link[@type='boardgamefamily']");
             if (familyNodes != null)
                 foreach (XmlNode node in familyNodes)
-                    result.Families.Add(int.Parse(node.Attributes["id"].Value));
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Families.Add(id);
+                    familyNames[id] = name;
+                }
+
+            // designer
+            var designerNodes = d.SelectNodes("/items/item/link[@type='boardgamedesigner']");
+            if (designerNodes != null)
+                foreach (XmlNode node in designerNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Designers.Add(id);
+                    designerNames[id] = name;
+                }
+
+            // artist
+            var artistNodes = d.SelectNodes("/items/item/link[@type='boardgameartist']");
+            if (artistNodes != null)
+                foreach (XmlNode node in artistNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Artists.Add(id);
+                    artistNames[id] = name;
+                }
+
+            // publisher
+            var publisherNodes = d.SelectNodes("/items/item/link[@type='boardgamepublisher']");
+            if (publisherNodes != null)
+                foreach (XmlNode node in publisherNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Publishers.Add(id);
+                    publisherNames[id] = name;
+                }
 
             return result;
         }
@@ -206,6 +282,11 @@ namespace BoardGameGeek
         public ISet<int> Mechanics { get; set; }
         public ISet<int> Families { get; set; }
 
+        public ISet<int> Implementations { get; set; }
+        public ISet<int> Designers { get; set; }
+        public ISet<int> Artists { get; set; }
+        public ISet<int> Publishers { get; set; }
+
         public Boardgame()
         {
             NumPlayersBest = new Dictionary<int, int>();
@@ -215,8 +296,49 @@ namespace BoardGameGeek
             Categories = new HashSet<int>();
             Mechanics = new HashSet<int>();
             Families = new HashSet<int>();
+
+            Implementations = new HashSet<int>();
+            Designers = new HashSet<int>();
+            Artists = new HashSet<int>();
+            Publishers = new HashSet<int>();
         }
 
+        public string ToEmilCSV()
+        {
+            string space = ";";
+            StringBuilder builder = new StringBuilder();
+            builder.Append(Id + space);
+            builder.Append(Name + space);
+            builder.Append(YearPublished + space);
+            builder.Append(MinPlayers + space);
+            builder.Append(MaxPlayers + space);
+            builder.Append(PlayingTime + space);
+            builder.Append(MinAge + space);
+            builder.Append(UsersRated + space);
+            builder.Append(Average + space);
+            builder.Append(StdDev + space);
+            builder.Append(Owned + space);
+            builder.Append(Trading + space);
+            builder.Append(Wanting + space);
+            builder.Append(Wishing + space);
+            builder.Append(NumComments + space);
+            builder.Append(Id + space);
+            builder.Append(string.Join(",",NumPlayersBest.Select(kv => kv.Key+":"+kv.Value)) + space);
+            builder.Append(string.Join(",", NumPlayersRecommended.Select(kv => kv.Key + ":" + kv.Value)) + space);
+            builder.Append(string.Join(",", NumPlayersNotRecommended.Select(kv => kv.Key + ":" + kv.Value)) + space);
+            builder.Append(string.Join(",", SuggestedPlayerAge.Select(kv => kv.Key + ":" + kv.Value)) + space);
+            builder.Append(string.Join(",", Categories) + space);
+            builder.Append(string.Join(",", Mechanics) + space);
+            builder.Append(string.Join(",", Families) + space);
+            builder.Append(string.Join(",", Implementations) + space);
+            builder.Append(string.Join(",", Designers) + space);
+            builder.Append(string.Join(",", Artists) + space);
+            builder.Append(string.Join(",", Publishers) + space);
+
+            return builder.ToString();
+        }
+
+        // missing newest values
         public string ToCSV()
         {
             return Id + ";" +
