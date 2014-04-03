@@ -34,8 +34,9 @@ namespace BoardGameGeek
             
             _burstResult = new string[BurstSize];
             var ts = new Thread[BurstSize];
-            _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}",
+            _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}",
         DateTime.Now) + ".csv");
+            _fileWriter.WriteLine("id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
             var sw = new Stopwatch();
             sw.Start();
             for (int i = 1; i <= RANGE; i+=BurstSize)
@@ -64,8 +65,8 @@ namespace BoardGameGeek
 
             // id names
             StreamWriter ids = File.CreateText("linkIdNames.txt");
-            var dicts = new Dictionary<int, string>[] { categoryNames, mechanicNames, familyNames, designerNames, artistNames, publisherNames };
-            string[] headers = new string[]{"categories","mechanics","families","designers","artists","publishers"};
+            var dicts = new Dictionary<int, string>[] { categoryNames, mechanicNames, implementationNames, familyNames, designerNames, artistNames, publisherNames };
+            string[] headers = new string[]{"categories","mechanics","implementations","families","designers","artists","publishers"};
             for(int i = 0; i < dicts.Length; i++)
             {
                 var dict = dicts[i];
@@ -117,6 +118,7 @@ namespace BoardGameGeek
 
         private static Dictionary<int, string> categoryNames = new Dictionary<int, string>();
         private static Dictionary<int, string> mechanicNames = new Dictionary<int, string>();
+        private static Dictionary<int, string> implementationNames = new Dictionary<int, string>();
         private static Dictionary<int, string> familyNames = new Dictionary<int, string>();
         private static Dictionary<int, string> designerNames = new Dictionary<int, string>();
         private static Dictionary<int, string> artistNames = new Dictionary<int, string>();
@@ -137,8 +139,8 @@ namespace BoardGameGeek
             result.MinAge = int.Parse(getSimpleValue(d, "/items/item/minage", "value"));
 
             result.UsersRated = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/usersrated", "value"));
-            result.Average = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/average", "value").Replace(".",","));
-            result.StdDev = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/stddev", "value").Replace(".", ","));
+            result.Average = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/average", "value"));//.Replace(".",","));
+            result.StdDev = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/stddev", "value"));//.Replace(".", ","));
             result.Owned = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/owned", "value"));
             result.Trading = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/trading", "value"));
             result.Wanting = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/wanting", "value"));
@@ -201,6 +203,17 @@ namespace BoardGameGeek
                     string name = node.Attributes["value"].Value;
                     result.Mechanics.Add(id);
                     mechanicNames[id] = name;
+                }
+
+            // board game implementation
+            var implementationNodes = d.SelectNodes("/items/item/link[@type='boardgameimplementation']");
+            if (implementationNodes != null)
+                foreach (XmlNode node in implementationNodes)
+                {
+                    int id = int.Parse(node.Attributes["id"].Value);
+                    string name = node.Attributes["value"].Value;
+                    result.Implementations.Add(id);
+                    implementationNames[id] = name;
                 }
                     
             // board game family
@@ -322,7 +335,6 @@ namespace BoardGameGeek
             builder.Append(Wanting + space);
             builder.Append(Wishing + space);
             builder.Append(NumComments + space);
-            builder.Append(Id + space);
             builder.Append(string.Join(",",NumPlayersBest.Select(kv => kv.Key+":"+kv.Value)) + space);
             builder.Append(string.Join(",", NumPlayersRecommended.Select(kv => kv.Key + ":" + kv.Value)) + space);
             builder.Append(string.Join(",", NumPlayersNotRecommended.Select(kv => kv.Key + ":" + kv.Value)) + space);
