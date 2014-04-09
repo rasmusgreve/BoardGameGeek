@@ -13,7 +13,7 @@ namespace BoardGameGeek
     {
         private static StreamWriter _fileWriter;
         private static string[] _burstResult;
-        const int RANGE = 200;
+        const int RANGE = 200000;
         const int BurstSize = 10;
         public static void Main()
         {
