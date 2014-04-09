@@ -136,7 +136,7 @@ namespace DataMiningIndividual
         /// <param name="stringArrayLabel">The parameter to look for patterns in.</param>
         /// <returns>A list of patterns (lists of strings) who comply with the 
         /// support threshold.</returns>
-        public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold, string stringArrayLabel)
+        public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold, string[] stringArrayLabel)
         {
             data.ForEach(d => Array.Sort(d.hashStringArrays[stringArrayLabel]));
 
