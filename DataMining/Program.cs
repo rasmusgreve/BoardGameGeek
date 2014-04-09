@@ -35,11 +35,15 @@ namespace DataMiningIndividual
         /// saved under the same name with "-output.txt" at the end.</param>
         private static void PerformDM(string file)
         {
-            Console.WriteLine("Data Mining started.\n");
-            StreamWriter output = new System.IO.StreamWriter(file.Split('.')[0]+"-output.txt");
+            Console.WriteLine("Data Mining started.");
 
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
-            List<DataLine> answers = DataLine.ParseInferred(data);
+            List<DataLine> answers = DataLine.ParseFixed(data);
+
+            Console.WriteLine("Parsing Complete.\n");
+
+            // create output after successful parsing
+            StreamWriter output = new System.IO.StreamWriter(file.Split('.')[0] + "-output.txt");
 
             DataMining.minMaxNormalize(answers);
 

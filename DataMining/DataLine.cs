@@ -67,7 +67,7 @@ namespace DataMiningIndividual
         }
 
         /// <summary>
-        /// Parses all the data with the types (defined by human) for Questionare 2013
+        /// Parses all the data with the types (defined by human) for the BoardGameGeek data
         /// </summary>
         /// <param name="data">A two-dimensional (jagged) array of strings, containing
         /// the names of columns (as the first element) and then DataLine content in all
@@ -79,38 +79,41 @@ namespace DataMiningIndividual
         }
 	
         /// <summary>
-        /// Parses the data with the types (defined by human) for Questionare 2013
+        /// Parses the data with the types (defined by human) for the BoardGameGeek data
         /// </summary>
         /// <param name="data">One line of data to be parsed.</param>
         /// <param name="names">Names (keys) for each column.</param>
         /// <returns>A DateLine with the parsed content.</returns>
 	    public static DataLine ParseFixed(string[] data, string[] names){
-		    return new DataLine(ParseDouble(data[0]),
-				    ParseDate(data[1]),
-                    ParseDouble(data[2]),
-                    ParseDouble(data[3]),
-				    ParseString(data[4]),
-				    ParseStringArray(data[5]),
-                    ParseDouble(data[6]),
-				    ParseString(data[7]),
-				    ParseBoolean(data[8]),
-				    ParseBoolean(data[9]),
-				    ParseDouble(data[10]),
-				    ParseDouble(data[11]),
-				    ParseDouble(data[12]),
-				    ParseString(data[13]), // food
-				    ParseString(data[14]),
-				    ParseBoolean(data[15]),
-				    ParseBoolean(data[16]),
-				    ParseString(data[17]), // favSQL
-				    ParseBoolean(data[18]),
-				    ParseDouble(data[19]),
-				    ParseString(data[20]),
-				    ParseString(data[21]),
-                    ParseDouble(data[22]),
-                    ParseDouble(data[23]),
-				    ParseString(data[24]),
-                    names);
+            DataLine result = new DataLine();
+            result.hashDoubles[names[0]] = ParseDouble(data[0]);
+            result.hashStrings[names[1]] = ParseString(data[1]);
+            result.hashDoubles[names[2]] = ParseDouble(data[2]);
+            result.hashDoubles[names[3]] = ParseDouble(data[3]);
+            result.hashDoubles[names[4]] = ParseDouble(data[4]);
+            result.hashDoubles[names[5]] = ParseDouble(data[5]);
+            result.hashDoubles[names[6]] = ParseDouble(data[6]);
+            result.hashDoubles[names[7]] = ParseDouble(data[7]);
+            result.hashDoubles[names[8]] = ParseDouble(data[8]);
+            result.hashDoubles[names[9]] = ParseDouble(data[9]);
+            result.hashDoubles[names[10]] = ParseDouble(data[10]);
+            result.hashDoubles[names[11]] = ParseDouble(data[11]);
+            result.hashDoubles[names[12]] = ParseDouble(data[12]);
+            result.hashDoubles[names[13]] = ParseDouble(data[13]);
+            result.hashDoubles[names[14]] = ParseDouble(data[14]);
+            result.hashDoubles[names[15]] = ParseDouble(data[15]);
+            result.hashDoubles[names[16]] = ParseDouble(data[16]);
+            result.hashDoubles[names[17]] = ParseDouble(data[17]);
+            result.hashDoubles[names[18]] = ParseDouble(data[18]);
+            result.hashStringArrays[names[19]] = ParseStringArray(data[19]); // categories
+            result.hashStringArrays[names[20]] = ParseStringArray(data[20]); // mechanics
+            result.hashStringArrays[names[21]] = ParseStringArray(data[21]); // boardgamefamilies
+            result.hashStringArrays[names[22]] = ParseStringArray(data[22]); // implementation_of
+            result.hashStringArrays[names[23]] = ParseStringArray(data[23]); // designers
+            result.hashStringArrays[names[24]] = ParseStringArray(data[24]); // artists
+            result.hashStringArrays[names[25]] = ParseStringArray(data[25]); // publishers
+
+            return result;
 	    }
 
         /// <summary>
@@ -403,44 +406,6 @@ namespace DataMiningIndividual
             hashBooleans = new Dictionary<string, bool?>();
             hashDoubles = new Dictionary<string, double?>();
         } 
-
-        /// <summary>
-        /// Constructor for setting the fixed values for Questionare 2013 dataset.
-        /// </summary>
-	    public DataLine(double? age, DateTime? birth, double? prog,
-			    double? yearsStudy, string os, string[] favProg, double? english,
-			    string animal, bool? mountDK, bool? winter, double? oneToTen,
-			    double? zeroToOne, double? anotherZeroToOne, string food,
-			    string colour, bool? nn, bool? sql, string favSQL,
-			    bool? apriAlg, double? sqrt, string hometown, string tfg,
-			    double? planets, double? seq, string nameOfSeq, string[] names) : this() {
-
-            this.hashDoubles[names[0]] = age;
-            this.hashDates[names[1]] = birth;
-            this.hashDoubles[names[2]] = prog;
-            this.hashDoubles[names[3]] = yearsStudy;
-            this.hashStrings[names[4]] = os;
-            this.hashStringArrays[names[5]] = favProg;
-            this.hashDoubles[names[6]] = english;
-            this.hashStrings[names[7]] = animal;
-            this.hashBooleans[names[8]] = mountDK;
-            this.hashBooleans[names[9]] = winter;
-            this.hashDoubles[names[10]] = oneToTen;
-            this.hashDoubles[names[11]] = zeroToOne;
-            this.hashDoubles[names[12]] = anotherZeroToOne;
-            this.hashStrings[names[13]] = food;
-            this.hashStrings[names[14]] = colour;
-            this.hashBooleans[names[15]] = nn;
-            this.hashBooleans[names[16]] = sql;
-            this.hashStrings[names[17]] = favSQL;
-            this.hashBooleans[names[18]] = apriAlg;
-            this.hashDoubles[names[19]] = sqrt;
-            this.hashStrings[names[20]] = hometown;
-            this.hashStrings[names[21]] = tfg;
-            this.hashDoubles[names[22]] = planets;
-            this.hashDoubles[names[23]] = seq;
-            this.hashStrings[names[24]] = nameOfSeq;
-	    }
 
 	    public override string ToString() {
             StringBuilder builder = new StringBuilder();
