@@ -13,14 +13,19 @@ namespace BoardGameGeek
     {
         private static StreamWriter _fileWriter;
         private static string[] _burstResult;
-        const int RANGE = 200000;
+
+        const int OFFSET = 10200;
+        const int RANGE = OFFSET + 200;
+
         const int BurstSize = 10;
+
         public static void Main()
         {
-            FetchNormal(CSVForID);
+            //FetchGames(CSVForID,"id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
+            FetchGames(CSVForIDHistorical, "id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;historicalJun;historicalJul;historicalAug;historicalSep;hostoricalOct;");
         }
 
-        public static void FetchNormal(Func<int,string> idToCSVMethod)
+        public static void FetchGames(Func<int,string> idToCSVMethod, string header)
         {
             /*
             var xd = new XmlDocument();
@@ -40,17 +45,17 @@ namespace BoardGameGeek
             _burstResult = new string[BurstSize];
             var ts = new Thread[BurstSize];
             _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now) + ".csv");
-            _fileWriter.WriteLine("id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
+            _fileWriter.WriteLine(header);
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 1; i <= RANGE; i += BurstSize)
+            for (int i = 1+OFFSET; i <= RANGE; i += BurstSize)
             {
                 //break; //@@@@@@@ Do nothing! The file has been made
                 //Start threads
                 for (int j = i; j < i + BurstSize; j++)
                 {
                     ts[j - i] = new Thread(FetchDataAsync);
-                    ts[j - i].Start(new Tuple<int, int>(j, j - i));
+                    ts[j - i].Start(new Tuple<int, int, Func<int, string>>(j, j - i, idToCSVMethod));
                 }
                 //wait for completion
                 foreach (var thread in ts)
@@ -90,9 +95,11 @@ namespace BoardGameGeek
 
         public static void FetchDataAsync(Object o)
         {
-            var v = (Tuple<int, int>)o;
+            var v = (Tuple<int, int, Func<int, string>>)o;
             int i = v.Item1, p = v.Item2;
-            string r = CSVForID(i);
+            var func = v.Item3;
+
+            string r = func(i);
             _burstResult[p] = r;
             if (r != null)
             {   
@@ -111,6 +118,99 @@ namespace BoardGameGeek
                 var xd = new XmlDocument();
                 xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&stats=1&type=boardgame"); // &pagesize=100&page=1
                 var game = ParseXml(xd);
+                if (game == null) return null;
+                return game.ToEmilCSV();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static string CSVForIDHistorical(int id)
+        {
+            try
+            {
+                var xd = new XmlDocument();
+                xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&stats=1&type=boardgame"); // &pagesize=100&page=1
+
+                // check year before parse
+                int year = int.Parse(getSimpleValue(xd, "/items/item/yearpublished", "value"));
+                if (year < 2006 || year > 2013) return null;
+
+                var game = ParseXml(xd);
+
+                // then get historical
+
+                // load june to october (inclusive) of publish year
+                List<string> dates = new List<string>(5);
+                dates.Add(year+"0601");
+                dates.Add(year+"0701");
+                dates.Add(year+"0801");
+                dates.Add(year+"0901");
+                dates.Add(year+"1001");
+
+                int page = 1;
+
+                XmlDocument lastxd = null;
+                xd = new XmlDocument();
+                xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&historical=1&pagesize=100&page=" + page + "&type=boardgame");
+
+                while (dates.Count > 0)
+                {
+                    // search for first date on current page
+                    string firstDate = getSimpleValue(xd, "/items/item/statistics/ratings", "date");
+
+                    if (firstDate.CompareTo(dates[0]) > 0)
+                    {
+                        // can not be on this page
+                        game.AddHistorical();
+                        dates.RemoveAt(0);
+
+                        // if wanted date is before first, try and go back one page
+                        if (firstDate.CompareTo(dates[0]) > 0 && page > 1)
+                        {
+                            page--;
+                            xd = lastxd;
+                            Console.WriteLine("\t"+id+": Changing back to page " + page + " looking for " + dates[0]);
+                            continue;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\t" + id + ": Staying at page " + page + " looking for " + dates[0]);
+                            continue;
+                        }
+
+                    }
+
+                    XmlNode rightDateNode = xd.SelectSingleNode("/items/item/statistics/ratings[@date="+dates[0]+"]");
+
+                    if (rightDateNode == null)
+                    {
+                        page++;
+                        Console.WriteLine("\t" + id + ": Changing to page " + page + " looking for " + dates[0]);
+                        lastxd = xd;
+                        xd = new XmlDocument();
+                        xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&historical=1&pagesize=100&page=" + page + "&type=boardgame");
+
+                        if (page > 29) return null;
+
+                        continue;
+                    }
+                    else // parse it
+                    {
+                        Console.WriteLine("\t" + id + ": Found " + dates[0]);
+                        string usersrated = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/usersrated", "value");
+                        string avgRating = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/average", "value");
+                        string rank = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/ranks/rank", "value");
+                        string owned = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/owned", "value");
+                        string wanting = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/wanting", "value");
+                        string wishing = getSimpleValue(xd, "/items/item/statistics/ratings[@date=" + dates[0] + "]/wishing", "value");
+                        game.AddHistorical(usersrated,avgRating, rank, owned, wanting, wishing);
+                        dates.RemoveAt(0);
+                    }
+                }
+
                 if (game == null) return null;
                 return game.ToEmilCSV();
             }
@@ -304,6 +404,8 @@ namespace BoardGameGeek
         public ISet<int> Artists { get; set; }
         public ISet<int> Publishers { get; set; }
 
+        private IList<string[]> Historical { get; set; }
+
         public Boardgame()
         {
             NumPlayersBest = new Dictionary<int, int>();
@@ -318,6 +420,18 @@ namespace BoardGameGeek
             Designers = new HashSet<int>();
             Artists = new HashSet<int>();
             Publishers = new HashSet<int>();
+
+            Historical = new List<string[]>(5);
+        }
+
+        private void AddHistorical(string usersrated, string avgRating, string rank, string owned, string wanting, string wishing)
+        {
+            Historical.Add(new string[]{usersrated, avgRating, rank, owned, wanting, wishing});
+        }
+
+        private void AddHistorical()
+        {
+            Historical.Add(null);
         }
 
         public string ToEmilCSV()
@@ -350,6 +464,10 @@ namespace BoardGameGeek
             builder.Append(string.Join(",", Designers) + space);
             builder.Append(string.Join(",", Artists) + space);
             builder.Append(string.Join(",", Publishers) + space);
+            for (int i = 0; i < 5; i++)
+            {
+                builder.Append(string.Join(",", Historical[i]) + space);
+            }
 
             return builder.ToString();
         }
