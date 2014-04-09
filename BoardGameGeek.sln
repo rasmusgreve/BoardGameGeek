@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameGeek", "BoardGameGeek\BoardGameGeek.csproj", "{46CB883A-CA5C-4895-B61A-5147D9BDD000}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMining", "DataMining\DataMining.csproj", "{264924B1-D011-438A-9C15-C4FDD3731D18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{46CB883A-CA5C-4895-B61A-5147D9BDD000}.Debug|x86.Build.0 = Debug|x86
 		{46CB883A-CA5C-4895-B61A-5147D9BDD000}.Release|x86.ActiveCfg = Release|x86
 		{46CB883A-CA5C-4895-B61A-5147D9BDD000}.Release|x86.Build.0 = Release|x86
+		{264924B1-D011-438A-9C15-C4FDD3731D18}.Debug|x86.ActiveCfg = Debug|x86
+		{264924B1-D011-438A-9C15-C4FDD3731D18}.Debug|x86.Build.0 = Debug|x86
+		{264924B1-D011-438A-9C15-C4FDD3731D18}.Release|x86.ActiveCfg = Release|x86
+		{264924B1-D011-438A-9C15-C4FDD3731D18}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
