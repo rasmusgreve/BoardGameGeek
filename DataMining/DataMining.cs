@@ -131,23 +131,59 @@ namespace DataMiningIndividual
         /// to find frequent patterns of values.
         /// </summary>
         /// <param name="data">The dataset to look for frequent patterns in.</param>
-        /// <param name="supportThreshold">The minimum number of occurences to call a pattern
-        /// frequent.</param>
+        /// <param name="supportThreshold">The minimum number of occurences to call a pattern frequent.</param>
+        /// <param name="stringArrayLabel">An array of labels specifying which parameters to look for patterns in. 
+        /// MUST exist in either hashStringArrays or hashStrings on the DataLine.</param>
+        /// <returns>A list of patterns (lists of strings) who comply with the support threshold.</returns>
+        public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold,
+                                                             string[] stringArrayLabel)
+        {
+            const string aPrioriLabel = "aPrioriLabel";
+            data.ForEach(line =>
+                {
+                    // Create a new array containing all values of the given labels 
+                    var arr = new List<string>();
+                    stringArrayLabel.ForEach(label =>
+                        {
+                            //Find the label in either hashStringArrays or hashStrings
+                            if (line.hashStringArrays.ContainsKey(label))
+                                arr.AddRange(line.hashStringArrays[label]);
+                            else
+                                arr.Add(line.hashStrings[label]);
+                        });
+                    line.hashStringArrays[aPrioriLabel] = arr.ToArray();
+                } );
+            
+            // Run usual Apriori
+            var ret = Apriori(data, supportThreshold, aPrioriLabel);
+
+            // Cleanup: Delete the generated line
+            data.ForEach(line => line.hashStringArrays.Remove(aPrioriLabel));
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Performs Apriori on the given dataset at a specific string array label in order
+        /// to find frequent patterns of values.
+        /// Runs in O(n^2 + k*n) time, n = <see cref="data"/>.Count, k = length of largest frequent item set.
+        /// </summary>
+        /// <param name="data">The dataset to look for frequent patterns in.</param>
+        /// <param name="supportThreshold">The minimum number of occurences to call a pattern frequent.</param>
         /// <param name="stringArrayLabel">The parameter to look for patterns in.</param>
-        /// <returns>A list of patterns (lists of strings) who comply with the 
-        /// support threshold.</returns>
-        public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold, string[] stringArrayLabel)
+        /// <returns>A list of patterns (lists of strings) who comply with the support threshold.</returns>
+        public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold, string stringArrayLabel)
         {
             data.ForEach(d => Array.Sort(d.hashStringArrays[stringArrayLabel]));
 
             int k;
-            Dictionary<List<string>, int> frequentItemSets = GenerateFrequentItemSetsLevel1(data, stringArrayLabel, supportThreshold);
-            List<Tuple<List<string>, int>> result = new List<Tuple<List<string>, int>>(frequentItemSets.Select(kv => new Tuple<List<string>, int>(kv.Key, kv.Value)));
-            for (k = 1; frequentItemSets.Count > 0; k++)
+            Dictionary<List<string>, int> frequentItemSets = GenerateFrequentItemSetsLevel1(data, stringArrayLabel, supportThreshold); // O(n^2)   <------------------
+            List<Tuple<List<string>, int>> result = new List<Tuple<List<string>, int>>(frequentItemSets.Select(kv => new Tuple<List<string>, int>(kv.Key, kv.Value))); // O(f), f = frequentItemSet.Count
+            for (k = 1; frequentItemSets.Count > 0; k++) // O(k)   <------------------
             {
                 Console.WriteLine("Finding frequent itemsets of length " + (k + 1));
-                frequentItemSets = GenerateFrequentItemSets(supportThreshold, data, stringArrayLabel, frequentItemSets);
-                result.AddRange(frequentItemSets.Select(kv => new Tuple<List<string>, int>(kv.Key, kv.Value)));
+                frequentItemSets = GenerateFrequentItemSets(supportThreshold, data, stringArrayLabel, frequentItemSets); // O(n)   <------------------
+                result.AddRange(frequentItemSets.Select(kv => new Tuple<List<string>, int>(kv.Key, kv.Value))); // O(f), f = frequentItemSet.Count
 
                 Console.WriteLine(" found " + frequentItemSets.Count);
             }
@@ -172,8 +208,8 @@ namespace DataMiningIndividual
         /// to only get grounded association rules.</param>
         /// <returns>A list of assoiciation rules containing the left term, right term
         /// and the calculated confidence of the association.</returns>
-        public static List<Tuple<List<string>, List<string>, double>> AprioriAssociationRules(List<DataLine> data, List<List<string>> aprioriResult, 
-            string stringArrayLabel, double confidenceThreshold)
+        public static List<Tuple<List<string>, List<string>, double>> AprioriAssociationRules
+            (List<DataLine> data, List<List<string>> aprioriResult, string stringArrayLabel, double confidenceThreshold)
         {
             List<Tuple<List<string>, List<string>, double>> result = new List<Tuple<List<string>, List<string>, double>>();
             foreach(List<string> l in aprioriResult){
@@ -194,10 +230,14 @@ namespace DataMiningIndividual
             return result;
         }
 
-        // ------------- Private Helper Classes --------------
+        #region ------------- Private Helper Classes --------------
 
         private class ListComparer<T> : IEqualityComparer<List<T>>
         {
+            /// <summary>
+            /// Linear running time.
+            /// Runs in O(n) time, n = <see cref="x"/>.Count
+            /// </summary>
             public bool Equals(List<T> x, List<T> y)
             {
                 if (x.Count != y.Count) return false;
@@ -220,7 +260,9 @@ namespace DataMiningIndividual
             }
         }
 
-        // ------------- Private Helper Methods --------------
+        #endregion
+
+        #region ------------- Private Helper Methods --------------
 
         /// <summary>
         /// Calculates the numerical distance between two object using their collected set of values.
@@ -289,21 +331,33 @@ namespace DataMiningIndividual
             return false;
         }
 
-        // APRIORI
+        #endregion
 
-        private static Dictionary<List<string>, int> GenerateFrequentItemSets(int supportThreshold, List<DataLine> data,
-                    string stringArrayLabel, Dictionary<List<string>, int> lowerLevelItemSets)
+        #region ------------- Apriori Helper Methods --------------
+
+        /// <summary>
+        /// Linear running time (much more complex than just "linear", really).
+        /// Runs in O(n) time, n = <see cref="data"/>.Count.
+        /// Actually O(n + m^4), n = <see cref="data"/>.Count, m = <see cref="lowerLevelItemSets"/>.Count, but dominated by n (yeah, it's still more complicated than that, but don't blow your brains out).
+        /// </summary>
+        private static Dictionary<List<string>, int> GenerateFrequentItemSets
+            (int supportThreshold, List<DataLine> data, string stringArrayLabel, Dictionary<List<string>, int> lowerLevelItemSets)
         {
             HashSet<List<string>> candidates = new HashSet<List<string>>(new ListComparer<string>());
 
-            // first generate candidate itemsets from the lower level itemsets
-            foreach (List<string> first in lowerLevelItemSets.Keys)
+            /*
+             * first generate candidate itemsets from the lower level itemsets
+             * Cubic running time (worst case quadroble time) in length of lowerLevelItems.
+             * Runs in O(m^3) time (worst case O(m^4)), m = lowerLevelItemSets.Count 
+             */
+            foreach (List<string> first in lowerLevelItemSets.Keys) //O(m)   <------------------
             {
-                foreach (List<string> second in lowerLevelItemSets.Keys)
+                foreach (List<string> second in lowerLevelItemSets.Keys) //O(m)   <------------------
                 {
-                    if (!new ListComparer<string>().Equals(first,second) && IdenticalButLast(first, second))
+                    if (!new ListComparer<string>().Equals(first,second) //O(m)
+                        && IdenticalButLast(first, second)) //O(m)
                     {
-                        List<string> joined = first.Union(second).OrderBy(s => s).ToList();
+                        List<string> joined = first.Union(second).OrderBy(s => s).ToList(); //O(m) - worst case O(m^2) but should be close to O(m)   <------------------
                         if (!candidates.Contains(joined))
                         {
                             candidates.Add(joined);
@@ -315,16 +369,18 @@ namespace DataMiningIndividual
             /*
              * Now check the support for all candidates and add only those
              * that have enough support to the set
+             * Linear running time in data.
+             * Runs in O(n) time, n = data.Count - actually O( c^3 + n) ) time, n = data.Count, c = candidates.Count, but dominated by n - (full O( c*(c^2 + s + n*c) ))
              */
             Dictionary<List<string>, int> result = new Dictionary<List<string>, int>(new ListComparer<string>());
-            foreach (List<string> cand in candidates)
+            foreach (List<string> cand in candidates) // O(c)   <------------------
             {
                 //Console.WriteLine("Candidate [" + string.Join(",", cand) + "]");
-                List<List<string>> subsets = GetSubsets(cand);
+                List<List<string>> subsets = GetSubsets(cand); //O(c^2)   <------------------
                 //subsets.ForEach(l => Console.WriteLine("\t["+string.Join(",",l)+"]"));
-                if (subsets.All(t => lowerLevelItemSets.ContainsKey(t)))
+                if (subsets.All(t => lowerLevelItemSets.ContainsKey(t))) //O(s)
                 {
-                    int support = CountSupport(cand, data, stringArrayLabel);
+                    int support = CountSupport(cand, data, stringArrayLabel); //O(n*c)   <------------------
                     if (support >= supportThreshold) result[cand] = support;
                 }
             }
@@ -332,6 +388,42 @@ namespace DataMiningIndividual
             return result;
         }
 
+        /// <summary>
+        /// Squared running time.
+        /// Runs in O(n^2) time, n = <see cref="data"/>.Count
+        /// </summary>
+        private static Dictionary<List<string>, int> GenerateFrequentItemSetsLevel1(List<DataLine> data, string stringArrayLabel, int supportThreshold)
+        {
+            // Calculate support for all elements
+            Dictionary<List<string>, int> all = new Dictionary<List<string>, int>(new ListComparer<string>());
+            foreach (DataLine curArr in data) // O(n)
+            {
+                foreach (string i in curArr.hashStringArrays[stringArrayLabel])
+                {
+                    List<string> curSet = new List<string>();
+                    curSet.Add(i);
+                    if (!all.ContainsKey(curSet))
+                    {
+                        all[curSet] = CountSupport(curSet, data, stringArrayLabel); // Runs in O(n) - actually O(n*m) but m = 1
+                    }
+                }
+            }
+
+            // Return only elements with minimum support
+
+            Dictionary<List<string>, int> result = new Dictionary<List<string>, int>(new ListComparer<string>());
+            foreach (List<string> s in all.Keys) // O(n)
+            {
+                if (all[s] >= supportThreshold)
+                    result[s] = all[s];
+            }
+            return result;
+        }
+        
+        /// <summary>
+        /// Squared running time.
+        /// Runs in O(n^2) time, n = <see cref="cand"/>.Count
+        /// </summary>
         private static List<List<string>> GetSubsets(List<string> cand)
         {
             List<List<string>> result = new List<List<string>>();
@@ -344,22 +436,30 @@ namespace DataMiningIndividual
             return result;
         }
 
+        /// <summary>
+        /// Cubic running time.
+        /// Runs in O(n^3) time, n = <see cref="cand"/>.Count
+        /// </summary>
         private static List<List<string>> GetSubsetsDeep(List<string> cand)
         {
             List<List<string>> result = new List<List<string>>();
-            Stack<List<string>> deeper = new Stack<List<string>>(GetSubsets(cand));
-            while (deeper.Count > 0)
+            Stack<List<string>> deeper = new Stack<List<string>>(GetSubsets(cand));// Runs in O(n^2) time
+            while (deeper.Count > 0) //O(n)
             {
                 List<string> cur = deeper.Pop();
-                if(!result.Any(r => new ListComparer<string>().Equals(cur)))
+                if(!result.Any(r => new ListComparer<string>().Equals(cur))) // O(n^2) - because result.Any is O(n) and Equals is O(n)
                 {
                     result.Add(cur);
-                    GetSubsets(cur).Where(s => s.Count > 0).ForEach(s => deeper.Push(s));
+                    GetSubsets(cur).Where(s => s.Count > 0).ForEach(s => deeper.Push(s)); //Runs in O(n^2) time
                 }
             }
             return result;
         }
 
+        /// <summary>
+        /// Linear running time.
+        /// Runs in O(n) time, n = <see cref="first"/>.Count
+        /// </summary>
         private static bool IdenticalButLast(List<string> first, List<string> second)
         {
             for (int i = 0; i < first.Count - 1; i++)
@@ -369,32 +469,10 @@ namespace DataMiningIndividual
             return true;
         }
 
-        private static Dictionary<List<string>, int> GenerateFrequentItemSetsLevel1(List<DataLine> data, string stringArrayLabel, int supportThreshold)
-        {
-            Dictionary<List<string>, int> temp = new Dictionary<List<string>, int>(new ListComparer<string>());
-            foreach (DataLine curArr in data)
-            {
-                foreach (string i in curArr.hashStringArrays[stringArrayLabel])
-                {
-                    List<string> curSet = new List<string>();
-                    curSet.Add(i);
-                    if (!temp.ContainsKey(curSet))
-                    {
-                        temp[curSet] = CountSupport(curSet, data, stringArrayLabel);
-                    }
-                }
-            }
-
-            // remove under Threshold
-            Dictionary<List<string>, int> result = new Dictionary<List<string>, int>(new ListComparer<string>());
-            foreach (List<string> s in temp.Keys)
-            {
-                if (temp[s] >= supportThreshold)
-                    result[s] = temp[s];
-            }
-            return result;
-        }
-
+        /// <summary>
+        /// (Almost) Linear running time.
+        /// (Probably) Runs in O(n*m) time, n = <see cref="data"/>.Count, m = <see cref="itemSet"/>.Count.
+        /// </summary>
         private static int CountSupport(List<string> itemSet, List<DataLine> data, string stringArrayLabel)
         {
 
@@ -407,5 +485,7 @@ namespace DataMiningIndividual
 
             return matches;*/
         }
+
+        #endregion
     }
 }
