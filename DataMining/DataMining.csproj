@@ -48,6 +48,9 @@
     <Compile Include="DataMining.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="KMeanCluster.cs" />
+    <Compile Include="Neural Networks\Connection.cs" />
+    <Compile Include="Neural Networks\NeuralNetwork.cs" />
+    <Compile Include="Neural Networks\Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
