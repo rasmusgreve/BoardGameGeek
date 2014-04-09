@@ -17,8 +17,6 @@ namespace DataMiningIndividual
         static void Main(string[] args)
         {
             PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
-            //PerformDM("Data_Mining_Student_DataSet_Spring_2013_Fixed");
-            //PerformDM("data_mining_2014_dataset");
             Console.ReadLine();
         }
 
