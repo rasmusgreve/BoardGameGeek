@@ -86,32 +86,32 @@ namespace DataMiningIndividual
         /// <returns>A DateLine with the parsed content.</returns>
 	    public static DataLine ParseFixed(string[] data, string[] names){
             DataLine result = new DataLine();
-            result.hashDoubles[names[0]] = ParseDouble(data[0]);
-            result.hashStrings[names[1]] = ParseString(data[1]);
-            result.hashDoubles[names[2]] = ParseDouble(data[2]);
-            result.hashDoubles[names[3]] = ParseDouble(data[3]);
-            result.hashDoubles[names[4]] = ParseDouble(data[4]);
-            result.hashDoubles[names[5]] = ParseDouble(data[5]);
-            result.hashDoubles[names[6]] = ParseDouble(data[6]);
-            result.hashDoubles[names[7]] = ParseDouble(data[7]);
-            result.hashDoubles[names[8]] = ParseDouble(data[8]);
-            result.hashDoubles[names[9]] = ParseDouble(data[9]);
-            result.hashDoubles[names[10]] = ParseDouble(data[10]);
-            result.hashDoubles[names[11]] = ParseDouble(data[11]);
-            result.hashDoubles[names[12]] = ParseDouble(data[12]);
-            result.hashDoubles[names[13]] = ParseDouble(data[13]);
-            result.hashDoubles[names[14]] = ParseDouble(data[14]);
-            result.hashDoubles[names[15]] = ParseDouble(data[15]);
-            result.hashDoubles[names[16]] = ParseDouble(data[16]);
-            result.hashDoubles[names[17]] = ParseDouble(data[17]);
-            result.hashDoubles[names[18]] = ParseDouble(data[18]);
-            result.hashStringArrays[names[19]] = ParseStringArray(data[19]); // categories
-            result.hashStringArrays[names[20]] = ParseStringArray(data[20]); // mechanics
-            result.hashStringArrays[names[21]] = ParseStringArray(data[21]); // boardgamefamilies
-            result.hashStringArrays[names[22]] = ParseStringArray(data[22]); // implementation_of
-            result.hashStringArrays[names[23]] = ParseStringArray(data[23]); // designers
-            result.hashStringArrays[names[24]] = ParseStringArray(data[24]); // artists
-            result.hashStringArrays[names[25]] = ParseStringArray(data[25]); // publishers
+            result.hashDoubles[names[0]] = ParseDouble(data[0]); 			 //id
+            result.hashStrings[names[1]] = ParseString(data[1]);             //name
+            result.hashStrings[names[2]] = ParseString(data[2], "year ");    //year_published
+            result.hashStrings[names[3]] = ParseString(data[3], "mina ");    //min_players
+            result.hashStrings[names[4]] = ParseString(data[4], "maxa ");    //max_players
+            result.hashStrings[names[5]] = ParseString(data[5], "mins ");    //playingtime
+            result.hashDoubles[names[6]] = ParseDouble(data[6]);             //min_age
+            result.hashDoubles[names[7]] = ParseDouble(data[7]);             //users_rated
+            result.hashStrings[names[8]] = ParseString(data[8], "rate ");    //average_rating
+            result.hashDoubles[names[9]] = ParseDouble(data[9]);             //rating_stddev
+            result.hashDoubles[names[10]] = ParseDouble(data[10]);           //num_owned
+            result.hashDoubles[names[11]] = ParseDouble(data[11]);           //num_trading
+            result.hashDoubles[names[12]] = ParseDouble(data[12]);           //num_wanting
+            result.hashDoubles[names[13]] = ParseDouble(data[13]);           //num_wishing
+            result.hashDoubles[names[14]] = ParseDouble(data[14]);           //num_comments
+            result.hashDoubles[names[15]] = ParseDouble(data[15]);           //num_players_best
+            result.hashDoubles[names[16]] = ParseDouble(data[16]);           //num_players_rec
+            result.hashDoubles[names[17]] = ParseDouble(data[17]);           //num_players_notrec
+            result.hashDoubles[names[18]] = ParseDouble(data[18]);           //suggested_age
+            result.hashStringArrays[names[19]] = ParseStringArray(data[19]); //categories
+            result.hashStringArrays[names[20]] = ParseStringArray(data[20]); //mechanics
+            result.hashStringArrays[names[21]] = ParseStringArray(data[21]); //boardgamefamilies
+            result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
+            result.hashStringArrays[names[23]] = ParseStringArray(data[23]); //designers
+            result.hashStringArrays[names[24]] = ParseStringArray(data[24]); //artists
+            result.hashStringArrays[names[25]] = ParseStringArray(data[25]); //publishers
 
             return result;
 	    }
@@ -382,7 +382,7 @@ namespace DataMiningIndividual
         /// </summary>
         /// <param name="input">The input string.</param>
         /// <returns>The resulting string.</returns>
-	    private static string ParseString(string input) {
+	    private static string ParseString(string input, string prefix = "") {
             if (input == null) return null;
 		    // try and make strings uniform
 		
@@ -392,7 +392,7 @@ namespace DataMiningIndividual
 		    // remove extra space
             input = input.Trim();
 		
-		    return input;
+		    return prefix + input;
 	    }
 
         /// <summary>

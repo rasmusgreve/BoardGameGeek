@@ -1,14 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataMiningIndividual
 {
     class CSVParser
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns>A dictionary from link type(string) to (dictionary of id (int) to name (string))</returns>
+        public static Dictionary<string, Dictionary<int, string>> ReadLinkFile(string fileName)
+        {
+            var result = new Dictionary<string, Dictionary<int, string>>();
+            Dictionary<int, string> curDict = null;
+            string curHead = null;
+
+            StreamReader bufRdr = File.OpenText(fileName);
+            string line = null;
+            
+            while ((line = bufRdr.ReadLine()) != null)
+            {
+                if (line.Trim().Equals("")) continue;
+                string[] arr = line.Split(new char[] { '=' }, StringSplitOptions.None);
+                if (arr.Length == 1) //Read heading
+                {
+                    if (curDict != null) result.Add(curHead,curDict);
+                    curDict = new Dictionary<int, string>();
+                    curHead = line.Trim();
+                    continue;
+                }
+                var key = int.Parse(arr[0].Trim());
+                var val = arr[1].Trim();
+                curDict.Add(key, val);
+            }
+            bufRdr.Close();
+            return result;
+        }
+
         	    /**
 	     * The read method reads in a csv file as a two dimensional string array.
 	     * This method is utilizes the string.split method for splitting each line of the data file.
