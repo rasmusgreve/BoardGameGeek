@@ -17,9 +17,14 @@ namespace BoardGameGeek
         const int BurstSize = 10;
         public static void Main()
         {
+            FetchNormal(CSVForID);
+        }
+
+        public static void FetchNormal(Func<int,string> idToCSVMethod)
+        {
             /*
             var xd = new XmlDocument();
-            xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + 0 + "&stats=1&ratingcomments=1&pagesize=100&page=1");
+            xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + 0 + "&stats=1"); // &ratingcomments=1&pagesize=100&page=1
             Boardgame b = ParseXml(xd);
             Console.WriteLine(b);
             Console.WriteLine("--------------------------");
@@ -31,22 +36,21 @@ namespace BoardGameGeek
             }
             Console.ReadLine();
             */
-            
+
             _burstResult = new string[BurstSize];
             var ts = new Thread[BurstSize];
-            _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}",
-        DateTime.Now) + ".csv");
+            _fileWriter = File.CreateText("data" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now) + ".csv");
             _fileWriter.WriteLine("id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 1; i <= RANGE; i+=BurstSize)
+            for (int i = 1; i <= RANGE; i += BurstSize)
             {
                 //break; //@@@@@@@ Do nothing! The file has been made
                 //Start threads
                 for (int j = i; j < i + BurstSize; j++)
                 {
-                    ts[j-i] = new Thread(FetchDataAsync);
-                    ts[j - i].Start(new Tuple<int,int>(j,j-i));
+                    ts[j - i] = new Thread(FetchDataAsync);
+                    ts[j - i].Start(new Tuple<int, int>(j, j - i));
                 }
                 //wait for completion
                 foreach (var thread in ts)
@@ -66,8 +70,8 @@ namespace BoardGameGeek
             // id names
             StreamWriter ids = File.CreateText("linkIdNames.txt");
             var dicts = new Dictionary<int, string>[] { categoryNames, mechanicNames, implementationNames, familyNames, designerNames, artistNames, publisherNames };
-            string[] headers = new string[]{"categories","mechanics","implementations","families","designers","artists","publishers"};
-            for(int i = 0; i < dicts.Length; i++)
+            string[] headers = new string[] { "categories", "mechanics", "implementations", "families", "designers", "artists", "publishers" };
+            for (int i = 0; i < dicts.Length; i++)
             {
                 var dict = dicts[i];
                 ids.WriteLine(headers[i]);
@@ -80,7 +84,7 @@ namespace BoardGameGeek
             ids.Flush();
             ids.Close();
 
-            Console.WriteLine("All done! " + sw.ElapsedMilliseconds/1000 + "s");
+            Console.WriteLine("All done! " + sw.ElapsedMilliseconds / 1000 + "s");
             Console.ReadLine();
         }
 
@@ -105,7 +109,7 @@ namespace BoardGameGeek
             try
             {
                 var xd = new XmlDocument();
-                xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&stats=1&pagesize=100&page=1&type=boardgame");
+                xd.Load("http://www.boardgamegeek.com/xmlapi2/thing?id=" + id + "&stats=1&type=boardgame"); // &pagesize=100&page=1
                 var game = ParseXml(xd);
                 if (game == null) return null;
                 return game.ToEmilCSV();

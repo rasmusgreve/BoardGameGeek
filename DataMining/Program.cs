@@ -16,9 +16,8 @@ namespace DataMiningIndividual
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
+            Console.WriteLine("Testing 123");
             PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
-            //PerformDM("Data_Mining_Student_DataSet_Spring_2013_Fixed");
-            //PerformDM("data_mining_2014_dataset");
             Console.ReadLine();
         }
 
@@ -38,15 +37,17 @@ namespace DataMiningIndividual
             Console.WriteLine("Data Mining started.");
 
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
+
+            var link_ids = CSVParser.ReadLinkFile("linkIdNames.txt");
             List<DataLine> answers = DataLine.ParseFixed(data);
 
             Console.WriteLine("Parsing Complete.\n");
 
             // create output after successful parsing
-            StreamWriter output = new System.IO.StreamWriter(file.Split('.')[0] + "-output.txt");
-
-            DataMining.minMaxNormalize(answers);
-
+            TextWriter output = Console.Out;
+            
+            //DataMining.minMaxNormalize(answers);
+            /*
             for (int i = 0; i < answers.Count; i++)
             {
                 Print(output,answers[i]);
@@ -71,13 +72,12 @@ namespace DataMiningIndividual
                 Print(output,"Cluster #" + c);
                 Print(output,clusters[c] + "\n");
             }
-
+            */
             // Apriori
-            string aprioriLabel = "categories";
+            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
             int supportThreshold = answers.Count / 20;
-            Print(output, "Apriori results ("+aprioriLabel+"):");
             
-            List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabel);
+            List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
             foreach (Tuple<List<string>, int> list in patterns)
             {
                 Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
@@ -100,14 +100,14 @@ namespace DataMiningIndividual
         /// </summary>
         /// <param name="target">The stream to write to.</param>
         /// <param name="o">The object that wants written.</param>
-        private static void Print(StreamWriter target, Object o) { Print(target,o.ToString()); }
+        private static void Print(TextWriter target, Object o) { Print(target,o.ToString()); }
 
         /// <summary>
         /// Prints the given string to the Stream.
         /// </summary>
         /// <param name="target">The stream to write to.</param>
         /// <param name="str">The string that wants written.</param>
-        private static void Print(StreamWriter target, String str)
+        private static void Print(TextWriter target, String str)
         {
             target.WriteLine(str);
             target.Flush();
