@@ -14,8 +14,8 @@ namespace BoardGameGeek
         private static StreamWriter _fileWriter;
         private static string[] _burstResult;
 
-        const int OFFSET = 10200;
-        const int RANGE = OFFSET + 200;
+        const int OFFSET = 93000;
+        const int RANGE = 160000;
 
         const int BurstSize = 10;
 

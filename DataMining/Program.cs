@@ -88,6 +88,8 @@ namespace DataMiningIndividual
 
             Print(output,"");
             /*
+
+            string aprioriLabel = "";
             // Assiciation Rules
             List<Tuple<List<string>, List<string>, double>> ass = DataMining.AprioriAssociationRules(answers, patterns.Select(p => p.Item1).ToList(), aprioriLabel, 0.7);
             foreach (Tuple<List<string>, List<string>, double> assiciation in ass)
