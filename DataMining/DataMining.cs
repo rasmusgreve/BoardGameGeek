@@ -147,9 +147,15 @@ namespace DataMiningIndividual
                         {
                             //Find the label in either hashStringArrays or hashStrings
                             if (line.hashStringArrays.ContainsKey(label))
-                                arr.AddRange(line.hashStringArrays[label]);
+                            {
+                                if (line.hashStringArrays[label] != null)
+                                    arr.AddRange(line.hashStringArrays[label]);
+                            }
                             else
-                                arr.Add(line.hashStrings[label]);
+                            {
+                                if (line.hashStrings[label] != null)
+                                    arr.Add(line.hashStrings[label]);
+                            }
                         });
                     line.hashStringArrays[aPrioriLabel] = arr.ToArray();
                 } );
@@ -174,9 +180,11 @@ namespace DataMiningIndividual
         /// <returns>A list of patterns (lists of strings) who comply with the support threshold.</returns>
         public static List<Tuple<List<string>, int>> Apriori(List<DataLine> data, int supportThreshold, string stringArrayLabel)
         {
+            Console.WriteLine("Sorting items");
             data.ForEach(d => Array.Sort(d.hashStringArrays[stringArrayLabel]));
 
             int k;
+            Console.WriteLine("Finding frequent itemsets of length 1");
             Dictionary<List<string>, int> frequentItemSets = GenerateFrequentItemSetsLevel1(data, stringArrayLabel, supportThreshold); // O(n^2)   <------------------
             List<Tuple<List<string>, int>> result = new List<Tuple<List<string>, int>>(frequentItemSets.Select(kv => new Tuple<List<string>, int>(kv.Key, kv.Value))); // O(f), f = frequentItemSet.Count
             for (k = 1; frequentItemSets.Count > 0; k++) // O(k)   <------------------

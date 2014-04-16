@@ -34,12 +34,14 @@ namespace DataMiningIndividual
         /// saved under the same name with "-output.txt" at the end.</param>
         private static void PerformDM(string file)
         {
-            Console.WriteLine("Data Mining started.");
+            Console.WriteLine("Parsing started.");
 
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
-
+            Console.WriteLine("Read datalines");
             var link_ids = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
             List<DataLine> answers = DataLine.ParseFixed(data);
+            answers = answers.Take(5000).ToList();
 
             Console.WriteLine("Parsing Complete.\n");
 
@@ -76,22 +78,23 @@ namespace DataMiningIndividual
             // Apriori
             var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
             int supportThreshold = answers.Count / 20;
-            
+            Console.WriteLine("Datalines: " + answers.Count);
             List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
             foreach (Tuple<List<string>, int> list in patterns)
             {
+                //TODO: Replace ints with names in list.Item1
                 Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
             }
 
             Print(output,"");
-
+            /*
             // Assiciation Rules
             List<Tuple<List<string>, List<string>, double>> ass = DataMining.AprioriAssociationRules(answers, patterns.Select(p => p.Item1).ToList(), aprioriLabel, 0.7);
             foreach (Tuple<List<string>, List<string>, double> assiciation in ass)
             {
                 Print(output, "[" + string.Join(",", assiciation.Item1) + "] => [" + string.Join(",", assiciation.Item2) + "] == " + assiciation.Item3);
             }
-
+            */
             Console.WriteLine("DONE");
         }
 
