@@ -39,7 +39,7 @@ namespace DataMiningIndividual
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
             Console.WriteLine("Read datalines");
 
-            var link_ids = CSVParser.ReadLinkFile("linkIdNames.txt");
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
             Console.WriteLine("Read link file");
 
             List<DataLine> answers = DataLine.ParseFixed(data);
@@ -89,6 +89,17 @@ namespace DataMiningIndividual
             foreach (Tuple<List<string>, int> list in patterns)
             {
                 //TODO: Replace ints with names in list.Item1
+                for (int i = 0; i < list.Item1.Count; i++)
+                {
+                    try
+                    {
+                        int v = int.Parse(list.Item1[i]);
+                        list.Item1[i] = DataLine.IDtoLabel(v);
+                    }
+                    catch
+                    {
+                    }
+                }
                 Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
             }
 
