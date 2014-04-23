@@ -131,17 +131,17 @@ namespace DataMiningIndividual
             result.hashStrings[names[5]] = "playtime " + data[5];    //playingtime
             result.hashDoubles[names[6]] = Double.Parse(data[6]);             //min_age
             result.hashDoubles[names[7]] = Double.Parse(data[7]);             //users_rated
-            result.hashStrings[names[8]] = "rate " + data[8];    //average_rating
+            result.hashStrings[names[8]] = "rate " + data[8];                 //average_rating
             result.hashDoubles[names[9]] = Double.Parse(data[9]);             //rating_stddev
             result.hashDoubles[names[10]] = Double.Parse(data[10]);           //num_owned
             result.hashDoubles[names[11]] = Double.Parse(data[11]);           //num_trading
             result.hashDoubles[names[12]] = Double.Parse(data[12]);           //num_wanting
             result.hashDoubles[names[13]] = Double.Parse(data[13]);           //num_wishing
             result.hashDoubles[names[14]] = Double.Parse(data[14]);           //num_comments
-            //result.hashDoubles[names[15]] = ParseDouble(data[15]);           //num_players_best
-            //result.hashDoubles[names[16]] = ParseDouble(data[16]);           //num_players_rec
-            //result.hashDoubles[names[17]] = ParseDouble(data[17]);           //num_players_notrec
-            //result.hashDoubles[names[18]] = Double.Parse(data[18]);          //suggested_age
+            //result.hashDoubles[names[15]] = ParseDouble(data[15]);          //num_players_best
+            //result.hashDoubles[names[16]] = ParseDouble(data[16]);          //num_players_rec
+            //result.hashDoubles[names[17]] = ParseDouble(data[17]);          //num_players_notrec
+            //result.hashDoubles[names[18]] = Double.Parse(data[18]);         //suggested_age
             result.hashStringArrays[names[19]] = ParseStringArray(data[19], CATEGORY); //categories
             result.hashStringArrays[names[20]] = ParseStringArray(data[20], MECHANIC); //mechanics
             result.hashStringArrays[names[21]] = ParseStringArray(data[21], BOARDGAMEFAMILY); //boardgamefamilies
@@ -377,18 +377,9 @@ namespace DataMiningIndividual
             string[] output = ParseStringArray(input);
             for (int i = 0; i < output.Length;i++)
             {
-                try
-                {
-                    int v = int.Parse(output[i]);
-                    v += numberToAddToValue;
-                    output[i] = v.ToString();
-                }
-                catch
-                {
-                    Console.WriteLine("test");
-                }
-
-                
+                int v = int.Parse(output[i]);
+                v += numberToAddToValue;
+                output[i] = v.ToString();   
             }
             return output;
         }
