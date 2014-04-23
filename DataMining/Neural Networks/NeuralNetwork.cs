@@ -7,7 +7,7 @@ namespace DataMining.Neural_Networks
 {
     public class NeuralNetwork
     {
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         private Node[] inputNodes, outputNodes;
         private Node[][] hiddenLayers;
@@ -129,12 +129,9 @@ namespace DataMining.Neural_Networks
             connections.ToList().ForEach(e => e.UpdateWeight());
 
             //update bias
-            foreach (Node[] hLayer in hiddenLayers)
+            foreach (Node hNode in hiddenLayers.SelectMany(hLayer => hLayer))
             {
-                foreach (Node hNode in hLayer)
-                {
-                    hNode.UpdateBias();
-                }
+                hNode.UpdateBias();
             }
             outputNodes.ToList().ForEach(e => e.UpdateBias());
 

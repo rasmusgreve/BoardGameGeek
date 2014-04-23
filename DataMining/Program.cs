@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataMining.Neural_Networks;
 
 namespace DataMiningIndividual
 {
@@ -17,8 +18,44 @@ namespace DataMiningIndividual
         static void Main(string[] args)
         {
             Console.WriteLine("Testing 123");
-            PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            NeuralNetwork nn = new NeuralNetwork(2,1,1,1);
+            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
+            double[][] output = new[] {new[] {0.0}, new[] {1.0}, new[] {1.0}, new[] {0.0}};
+            //double[][][] training = LoadTestData("XOR test data.txt");
+            int result = 0;
+            int iteration = 1;
+            while (result < output.Length && iteration < 50000)
+            {
+                result = nn.runSession(input, output);
+                Console.WriteLine("iteration {0}, result {1} out of {2}",iteration,result,output.Length);
+                iteration++;
+            }
+            //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
             Console.ReadLine();
+        }
+
+        private static double[][][] LoadTestData(string xorTestDataTxt)
+        {
+            double[][] input = new double[4][];
+            double[][] output = new double[4][];
+            StreamReader f = File.OpenText(xorTestDataTxt);
+            int i = 0;
+            while (!f.EndOfStream)
+            {
+                string l = f.ReadLine();
+                string[] all = l.Split(':');
+                string outp = all.Last();
+                string[] inp = all.First().Split(' ');
+                output[i] = new []{Convert.ToDouble(outp)};
+                input[i] = new double[inp.Length];
+                for (int j = 0; j < inp.Length; j++)
+                {
+                    input[i][j] = Convert.ToDouble(inp);
+                }
+
+                i++;
+            }
+            return new[] {input, output};
         }
 
         /// <summary>

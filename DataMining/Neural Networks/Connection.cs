@@ -11,6 +11,9 @@ namespace DataMining.Neural_Networks
             Weight = init;
             From = fromNode;
             To = toNode;
+
+            From.OutCon.Add(this);
+            To.InCon.Add(this);
         }
 
         public void ChangeWeight(double change)

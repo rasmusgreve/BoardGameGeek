@@ -6,7 +6,7 @@ namespace DataMining.Neural_Networks
 {
     public class Node
     {
-        public const double LearningRate = 1.0;
+        public const double LearningRate = 5.0;
 
         public List<Connection> InCon, OutCon;
 
@@ -38,7 +38,7 @@ namespace DataMining.Neural_Networks
 
             double S = Bias + InCon.Sum(conn => conn.From.ForwardOperation()*conn.Weight);
 
-            double A = 1.0/(1.0 + Math.Pow(Math.E, -S));
+            double A = 1.0/(1.0 + Math.Pow(Math.E, -1.0 * S));
             OutputValue = A;
             return A;
         }
