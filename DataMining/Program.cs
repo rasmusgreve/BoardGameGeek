@@ -38,10 +38,16 @@ namespace DataMiningIndividual
 
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
             Console.WriteLine("Read datalines");
+
             var link_ids = CSVParser.ReadLinkFile("linkIdNames.txt");
             Console.WriteLine("Read link file");
+
             List<DataLine> answers = DataLine.ParseFixed(data);
             answers = answers.Take(5000).ToList();
+
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
+                .Take(5000).ToList();
+            Console.WriteLine("Historical Loaded");
 
             Console.WriteLine("Parsing Complete.\n");
 

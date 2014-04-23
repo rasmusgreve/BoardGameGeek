@@ -143,7 +143,7 @@ namespace DataMining.Neural_Networks
             return match;
         }
 
-        public int runSession(double[][] trainingInput, double[][] trainingOutput)
+        public int RunSession(double[][] trainingInput, double[][] trainingOutput)
         {
             int numCorrect = 0;
 

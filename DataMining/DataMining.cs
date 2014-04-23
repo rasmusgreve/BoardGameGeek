@@ -238,6 +238,16 @@ namespace DataMiningIndividual
             return result;
         }
 
+        public static void BackPropagation(List<DataLine> historicalData)
+        {
+            // Normalization of historical data
+            NormalizeHistorical(historicalData);
+
+            // Training of NN
+
+            // Verification
+        }
+
         #region ------------- Private Helper Classes --------------
 
         private class ListComparer<T> : IEqualityComparer<List<T>>
@@ -492,6 +502,15 @@ namespace DataMiningIndividual
     	    }
 
             return matches;*/
+        }
+
+        #endregion
+
+        #region ------------- Apriori Helper Methods --------------
+
+        private static void NormalizeHistorical(List<DataLine> data)
+        {
+
         }
 
         #endregion
