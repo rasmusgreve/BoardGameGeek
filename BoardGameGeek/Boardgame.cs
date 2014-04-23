@@ -235,7 +235,7 @@ namespace BoardGameGeek
 
             //Simple fields
             result.Id = int.Parse(getSimpleValue(d, "/items/item", "id"));
-            result.Name = getSimpleValue(d, "/items/item/name[@type='primary']", "value");
+            result.Name = getSimpleValue(d, "/items/item/name[@type='primary']", "value").Replace(';', ':').Replace('\n', ' ').Replace('\r', ' ');
             result.YearPublished = int.Parse(getSimpleValue(d, "/items/item/yearpublished", "value"));
             result.MinPlayers = int.Parse(getSimpleValue(d, "/items/item/minplayers", "value"));
             result.MaxPlayers = int.Parse(getSimpleValue(d, "/items/item/maxplayers", "value"));
@@ -243,8 +243,8 @@ namespace BoardGameGeek
             result.MinAge = int.Parse(getSimpleValue(d, "/items/item/minage", "value"));
 
             result.UsersRated = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/usersrated", "value"));
-            result.Average = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/average", "value"));//.Replace(".",","));
-            result.StdDev = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/stddev", "value"));//.Replace(".", ","));
+            result.Average = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/average", "value"),System.Globalization.NumberStyles.AllowDecimalPoint,System.Globalization.NumberFormatInfo.InvariantInfo);//.Replace(".",","));
+            result.StdDev = double.Parse(getSimpleValue(d, "/items/item/statistics/ratings/stddev", "value"), System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);//.Replace(".", ","));
             result.Owned = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/owned", "value"));
             result.Trading = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/trading", "value"));
             result.Wanting = int.Parse(getSimpleValue(d, "/items/item/statistics/ratings/wanting", "value"));
@@ -446,8 +446,8 @@ namespace BoardGameGeek
             builder.Append(PlayingTime + space);
             builder.Append(MinAge + space);
             builder.Append(UsersRated + space);
-            builder.Append(Average + space);
-            builder.Append(StdDev + space);
+            builder.Append(Average.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + space);
+            builder.Append(StdDev.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + space);
             builder.Append(Owned + space);
             builder.Append(Trading + space);
             builder.Append(Wanting + space);

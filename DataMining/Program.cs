@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace DataMiningIndividual
 {
@@ -53,6 +54,8 @@ namespace DataMiningIndividual
 
             // create output after successful parsing
             TextWriter output = Console.Out;
+
+            DataMining.BackPropagation(historical);
             
             //DataMining.minMaxNormalize(answers);
             /*
@@ -82,7 +85,7 @@ namespace DataMiningIndividual
             }
             */
             // Apriori
-            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
+            /*var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
             int supportThreshold = answers.Count / 20;
             Console.WriteLine("Datalines: " + answers.Count);
             List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
@@ -103,7 +106,7 @@ namespace DataMiningIndividual
                 Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
             }
 
-            Print(output,"");
+            Print(output,"");*/
             /*
 
             string aprioriLabel = "";

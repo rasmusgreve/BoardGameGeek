@@ -104,8 +104,11 @@ namespace DataMiningIndividual
                 double[] doubleArray = new double[5];
                 for (int j = 0; j < doubleArray.Length; j++)
                 {
-                    bool success = double.TryParse(splitted[j], out doubleArray[j]);
-                    if (!success) doubleArray[j] = 100000.0; // Hardcoded knowledge that the rank will be missing often
+                    bool success = double.TryParse(splitted[j], 
+                        System.Globalization.NumberStyles.AllowDecimalPoint, 
+                        System.Globalization.NumberFormatInfo.InvariantInfo,
+                        out doubleArray[j]);
+                    if (!success) doubleArray[j] = 999999.0; // Hardcoded knowledge that the rank will be missing often
                 }
 
                 result.hashDoubleArrays[name] = doubleArray;

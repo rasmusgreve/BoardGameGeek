@@ -510,6 +510,21 @@ namespace DataMiningIndividual
 
         private static void NormalizeHistorical(List<DataLine> data)
         {
+            DataLine[][] groups = data.GroupBy(bg => bg.hashStrings["year_published"]).Select(g => g.ToArray()).ToArray();
+
+            foreach (DataLine[] year in groups)
+            {
+                Console.WriteLine("Normalizing year " + year[0].hashStrings["year_published"]);
+                for(int i = 0; i < year[0].hashDoubleArrays.First().Value.Length; i++) // each value in the historical data
+                {
+                    IEnumerable<double> values = year[0].hashDoubleArrays.Keys.SelectMany(k => year.Select(g => g.hashDoubleArrays[k][i]));
+                    double min = values.Min();
+                    double max = values.Max();
+                    Console.WriteLine("\tHData " + i + ": min=" + min + " max=" + max);
+
+                    year.ForEach(g => g.hashDoubleArrays.Keys.ForEach(k => g.hashDoubleArrays[k][i] = (g.hashDoubleArrays[k][i] - min) / (max - min)));
+                }
+            }
 
         }
 
