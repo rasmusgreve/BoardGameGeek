@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace DataMiningIndividual
 {
@@ -38,15 +39,23 @@ namespace DataMiningIndividual
 
             string[][] data = CSVParser.ReadDataFile(file, ";", null);
             Console.WriteLine("Read datalines");
+
             DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
             Console.WriteLine("Read link file");
+
             List<DataLine> answers = DataLine.ParseFixed(data);
             answers = answers.Take(5000).ToList();
+
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
+                .Take(5000).ToList();
+            Console.WriteLine("Historical Loaded");
 
             Console.WriteLine("Parsing Complete.\n");
 
             // create output after successful parsing
             TextWriter output = Console.Out;
+
+            DataMining.BackPropagation(historical);
             
             //DataMining.minMaxNormalize(answers);
             /*
@@ -76,7 +85,7 @@ namespace DataMiningIndividual
             }
             */
             // Apriori
-            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
+            /*var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
             int supportThreshold = answers.Count / 20;
             Console.WriteLine("Datalines: " + answers.Count);
             List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
@@ -97,7 +106,7 @@ namespace DataMiningIndividual
                 Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
             }
 
-            Print(output,"");
+            Print(output,"");*/
             /*
 
             string aprioriLabel = "";

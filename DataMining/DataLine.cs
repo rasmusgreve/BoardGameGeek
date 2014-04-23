@@ -22,6 +22,7 @@ namespace DataMiningIndividual
         public Dictionary<string, DateTime?> hashDates;
         public Dictionary<string, string> hashStrings;
         public Dictionary<string, string[]> hashStringArrays;
+        public Dictionary<string, double[]> hashDoubleArrays;
         public Dictionary<string, bool?> hashBooleans;
         public Dictionary<string, double?> hashDoubles;
 
@@ -86,15 +87,44 @@ namespace DataMiningIndividual
             Console.WriteLine("Parsing " + data.Length + " lines");
             return data.Skip(1).Select(d => DataLine.ParseFixed(d,data[0])).ToList();
         }
-	
+
+        public static List<DataLine> ParseHistorical(string[][] data)
+        {
+            return data.Skip(1).Select(d => DataLine.ParseHistorical(d, data[0])).ToList();
+        }
+
+        public static DataLine ParseHistorical(string[] data, string[] names)
+        {
+            DataLine result = ParseFixed(data, names);
+            for (int i = 26; i <= 30; i++)
+            {
+                string name = names[i];
+                string[] splitted = data[i].Split(',');
+
+                double[] doubleArray = new double[5];
+                for (int j = 0; j < doubleArray.Length; j++)
+                {
+                    bool success = double.TryParse(splitted[j], 
+                        System.Globalization.NumberStyles.AllowDecimalPoint, 
+                        System.Globalization.NumberFormatInfo.InvariantInfo,
+                        out doubleArray[j]);
+                    if (!success) doubleArray[j] = 999999.0; // Hardcoded knowledge that the rank will be missing often
+                }
+
+                result.hashDoubleArrays[name] = doubleArray;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Parses the data with the types (defined by human) for the BoardGameGeek data
         /// </summary>
         /// <param name="data">One line of data to be parsed.</param>
         /// <param name="names">Names (keys) for each column.</param>
         /// <returns>A DateLine with the parsed content.</returns>
-	    public static DataLine ParseFixed(string[] data, string[] names){
-
+        public static DataLine ParseFixed(string[] data, string[] names)
+        {
             DataLine result = new DataLine();
             result.hashDoubles[names[0]] = Double.Parse(data[0]); 			 //id
             result.hashStrings[names[1]] = data[1];             //name
@@ -441,6 +471,7 @@ namespace DataMiningIndividual
             hashDates = new Dictionary<string, DateTime?>();
             hashStrings = new Dictionary<string, string>();
             hashStringArrays = new Dictionary<string, string[]>();
+            hashDoubleArrays = new Dictionary<string, double[]>();
             hashBooleans = new Dictionary<string, bool?>();
             hashDoubles = new Dictionary<string, double?>();
         } 
