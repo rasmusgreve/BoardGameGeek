@@ -7,7 +7,15 @@ using System.Threading.Tasks;
 namespace DataMiningIndividual
 {
 
-    class DataLine{
+    class DataLine
+    {
+
+        public const int CATEGORY           = 1000000;
+        public const int MECHANIC           = 2000000;
+        public const int BOARDGAMEFAMILY    = 3000000;
+        public const int DESIGNER           = 4000000;
+        public const int ARTIST             = 5000000;
+        public const int PUBLISHER          = 6000000;
 
         // Dictionaries for my 5 possible datatypes, the key is column header
         // and value is the current DataLine's value for it
@@ -87,13 +95,18 @@ namespace DataMiningIndividual
         /// <returns>A DateLine with the parsed content.</returns>
 	    public static DataLine ParseFixed(string[] data, string[] names){
 
+            if (data.Length != 26)
+            {
+                Console.WriteLine("Derp");
+            }
+
             DataLine result = new DataLine();
             result.hashDoubles[names[0]] = Double.Parse(data[0]); 			 //id
             result.hashStrings[names[1]] = data[1];             //name
             result.hashStrings[names[2]] = "year " + data[2];    //year_published
-            result.hashStrings[names[3]] = "mina " + data[3];    //min_players
-            result.hashStrings[names[4]] = "maxa " + data[4];    //max_players
-            result.hashStrings[names[5]] = "mins " + data[5];    //playingtime
+            result.hashStrings[names[3]] = "minpl " + data[3];    //min_players
+            result.hashStrings[names[4]] = "maxpl " + data[4];    //max_players
+            result.hashStrings[names[5]] = "playtime " + data[5];    //playingtime
             result.hashDoubles[names[6]] = Double.Parse(data[6]);             //min_age
             result.hashDoubles[names[7]] = Double.Parse(data[7]);             //users_rated
             result.hashStrings[names[8]] = "rate " + data[8];    //average_rating
@@ -107,46 +120,29 @@ namespace DataMiningIndividual
             //result.hashDoubles[names[16]] = ParseDouble(data[16]);           //num_players_rec
             //result.hashDoubles[names[17]] = ParseDouble(data[17]);           //num_players_notrec
             //result.hashDoubles[names[18]] = Double.Parse(data[18]);          //suggested_age
-            result.hashStringArrays[names[19]] = ParseStringArray(data[19]); //categories
-            result.hashStringArrays[names[20]] = ParseStringArray(data[20]); //mechanics
-            result.hashStringArrays[names[21]] = ParseStringArray(data[21]); //boardgamefamilies
+            result.hashStringArrays[names[19]] = ParseStringArray(data[19], CATEGORY); //categories
+            result.hashStringArrays[names[20]] = ParseStringArray(data[20], MECHANIC); //mechanics
+            result.hashStringArrays[names[21]] = ParseStringArray(data[21], BOARDGAMEFAMILY); //boardgamefamilies
             result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
-            result.hashStringArrays[names[23]] = ParseStringArray(data[23]); //designers
-            result.hashStringArrays[names[24]] = ParseStringArray(data[24]); //artists
-            result.hashStringArrays[names[25]] = ParseStringArray(data[25]); //publishers
+            result.hashStringArrays[names[23]] = ParseStringArray(data[23], DESIGNER); //designers
+            result.hashStringArrays[names[24]] = ParseStringArray(data[24], ARTIST); //artists
+            result.hashStringArrays[names[25]] = ParseStringArray(data[25], PUBLISHER); //publishers
 
-            /*
-            DataLine result = new DataLine();
-            result.hashDoubles[names[0]] = ParseDouble(data[0]); 			 //id
-            Console.WriteLine("Parsing " + (Double.Parse(data[0]) / 61815) * 100 + "%");
-            result.hashStrings[names[1]] = ParseString(data[1]);             //name
-            result.hashStrings[names[2]] = ParseString(data[2], "year ");    //year_published
-            result.hashStrings[names[3]] = ParseString(data[3], "mina ");    //min_players
-            result.hashStrings[names[4]] = ParseString(data[4], "maxa ");    //max_players
-            result.hashStrings[names[5]] = ParseString(data[5], "mins ");    //playingtime
-            result.hashDoubles[names[6]] = ParseDouble(data[6]);             //min_age
-            result.hashDoubles[names[7]] = ParseDouble(data[7]);             //users_rated
-            result.hashStrings[names[8]] = ParseString(data[8], "rate ");    //average_rating
-            result.hashDoubles[names[9]] = ParseDouble(data[9]);             //rating_stddev
-            result.hashDoubles[names[10]] = ParseDouble(data[10]);           //num_owned
-            result.hashDoubles[names[11]] = ParseDouble(data[11]);           //num_trading
-            result.hashDoubles[names[12]] = ParseDouble(data[12]);           //num_wanting
-            result.hashDoubles[names[13]] = ParseDouble(data[13]);           //num_wishing
-            result.hashDoubles[names[14]] = ParseDouble(data[14]);           //num_comments
-            result.hashDoubles[names[15]] = ParseDouble(data[15]);           //num_players_best
-            result.hashDoubles[names[16]] = ParseDouble(data[16]);           //num_players_rec
-            result.hashDoubles[names[17]] = ParseDouble(data[17]);           //num_players_notrec
-            result.hashDoubles[names[18]] = ParseDouble(data[18]);           //suggested_age
-            result.hashStringArrays[names[19]] = ParseStringArray(data[19]); //categories
-            result.hashStringArrays[names[20]] = ParseStringArray(data[20]); //mechanics
-            result.hashStringArrays[names[21]] = ParseStringArray(data[21]); //boardgamefamilies
-            result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
-            result.hashStringArrays[names[23]] = ParseStringArray(data[23]); //designers
-            result.hashStringArrays[names[24]] = ParseStringArray(data[24]); //artists
-            result.hashStringArrays[names[25]] = ParseStringArray(data[25]); //publishers
-            */
+            
             return result;
 	    }
+
+        public static Dictionary<string, Dictionary<int, string>> linkDictionary;
+
+        public static string IDtoLabel(int id)
+        {
+            if (id < MECHANIC)          return linkDictionary["categories"][id - CATEGORY];
+            if (id < BOARDGAMEFAMILY)   return linkDictionary["mechanics"][id - MECHANIC];
+            if (id < DESIGNER)          return linkDictionary["families"][id - BOARDGAMEFAMILY];
+            if (id < ARTIST)            return linkDictionary["designers"][id - DESIGNER];
+            if (id < PUBLISHER)         return linkDictionary["artists"][id - ARTIST];
+            return linkDictionary["publishers"][id - PUBLISHER];
+        }
 
         /// <summary>
         /// Tries to parse the input as a double.
@@ -351,6 +347,29 @@ namespace DataMiningIndividual
 		
 		    return null;
 	    }
+
+        private static string[] ParseStringArray(string input, int numberToAddToValue)
+        {
+            if (input == null) return null;
+
+            string[] output = ParseStringArray(input);
+            for (int i = 0; i < output.Length;i++)
+            {
+                try
+                {
+                    int v = int.Parse(output[i]);
+                    v += numberToAddToValue;
+                    output[i] = v.ToString();
+                }
+                catch
+                {
+                    Console.WriteLine("test");
+                }
+
+                
+            }
+            return output;
+        }
 
 	    private static string[] ParseStringArray(string input) {
             if (input == null) return null;

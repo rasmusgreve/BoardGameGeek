@@ -673,7 +673,6 @@ implementations
 12512 = D-Day
 12538 = Clocktowers
 12635 = Zaster
-
 12676 = Mini Car Wars
 12784 = Twister Moves
 12891 = Friedrich
