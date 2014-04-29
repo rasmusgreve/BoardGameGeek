@@ -19,8 +19,8 @@ namespace DataMining
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
+            NeuralNetwork nn = new NeuralNetwork(2, 1, 2, 1);
             Console.WriteLine("Testing 123");
-            NeuralNetwork nn = new NeuralNetwork(2,1,1,1);
             double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
             double[][] output = new[] {new[] {0.0}, new[] {1.0}, new[] {1.0}, new[] {0.0}};
             //double[][][] training = LoadTestData("XOR test data.txt");
@@ -29,7 +29,7 @@ namespace DataMining
             while (result < output.Length && iteration < 50000)
             {
                 result = nn.RunSession(input, output);
-                Console.WriteLine("iteration {0}, result {1} out of {2}",iteration,result,output.Length);
+                Console.WriteLine("iteration {0}, result {1} out of {2}",iteration,result,input.Length);
                 iteration++;
             }
             //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
