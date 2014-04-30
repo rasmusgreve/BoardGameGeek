@@ -20,6 +20,7 @@ namespace DataMining
         static void Main(string[] args)
         {
             //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            DataMining.FrequentPatternAnalysis();
             Console.ReadLine();
         }
 
@@ -85,29 +86,6 @@ namespace DataMining
                 Print(output,clusters[c] + "\n");
             }
             */
-            // Apriori
-            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
-            int supportThreshold = answers.Count / 4;
-            Console.WriteLine("Datalines: " + answers.Count);
-            var patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
-            patterns.Sort((tuple, tuple1) => tuple.Item2 - tuple1.Item2);
-            foreach (Tuple<List<string>, int> list in patterns)
-            {
-                Console.WriteLine("Support: " + list.Item2 + " / " + Math.Round((100d * list.Item2) / answers.Count, 1) + "%: [" + string.Join(",", list.Item1.Select(DataLine.IDtoLabel)) + "]");
-            }
-            
-         
-            //string aprioriLabel = "";
-
-            // Assiciation Rules
-            var ass = DataMining.AprioriAssociationRules(answers, patterns, 0.7);
-
-            Console.WriteLine();
-            ass.Sort((tuple, tuple1) => Math.Sign(tuple.Item4 - tuple1.Item4));
-            
-            foreach (var cheek in ass)
-
-                Console.WriteLine("Conf=" + Math.Round(cheek.Item3*100, 1) + "% lift=" + Math.Round(cheek.Item4, 2)+": [" + string.Join(",", cheek.Item1.Select(DataLine.IDtoLabel)) + "] => \t[" + string.Join(",", cheek.Item2.Select(DataLine.IDtoLabel)) + "]");
             }
         }
 }

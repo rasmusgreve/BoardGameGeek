@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DataMiningIndividual;
 using DataMining.Neural_Networks;
+using System.Diagnostics;
 
 namespace DataMining
 {
@@ -126,6 +127,51 @@ namespace DataMining
             }
 
             return clusters.ToList();
+        }
+
+        public static void FrequentPatternAnalysis()
+        {
+            double support = .05;
+            double confidence = .5;
+            int nbElements = 100000;
+
+            string[][] data = CSVParser.ReadDataFile("data2014-04-03_03-35-14.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+            answers = answers.Take(nbElements).ToList();
+
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            // Apriori
+            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
+            int supportThreshold = (int)(answers.Count * support);
+            Console.WriteLine("Apriori with suppport: "+support);
+            Console.WriteLine("Datalines: " + answers.Count);
+            var patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
+            patterns.Sort((tuple, tuple1) => tuple.Item2 - tuple1.Item2);
+            foreach (Tuple<List<string>, int> list in patterns)
+            {
+                Console.WriteLine("Support: " + list.Item2 + " / " + Math.Round((100d * list.Item2) / answers.Count, 1) + "%: [" + string.Join(",", list.Item1.Select(DataLine.IDtoLabel)) + "]");
+            }
+
+            Console.WriteLine("Now doing association mining with confidence: "+confidence);
+            //string aprioriLabel = "";
+
+            // Assiciation Rules
+            var ass = DataMining.AprioriAssociationRules(answers, patterns, confidence);
+
+            ass.Sort((tuple, tuple1) => Math.Sign(tuple.Item4 - tuple1.Item4));
+
+            foreach (var cheek in ass)
+                Console.WriteLine("Conf=" + Math.Round(cheek.Item3 * 100, 1) + "% lift=" + Math.Round(cheek.Item4, 2) + ": [" + string.Join(",", cheek.Item1.Select(DataLine.IDtoLabel)) + "] => \t[" + string.Join(",", cheek.Item2.Select(DataLine.IDtoLabel)) + "]");
+            Console.WriteLine("Done with frequent pattern analysis!");
+            stopwatch.Stop();
+            Console.WriteLine("Time: "+stopwatch.ElapsedMilliseconds);
         }
 
         /// <summary>
