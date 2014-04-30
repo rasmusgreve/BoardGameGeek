@@ -126,14 +126,28 @@ namespace DataMining.Neural_Networks
             }
 
             //update weights
-            connections.ToList().ForEach(e => e.UpdateWeight());
+            foreach (Connection conn in connections)
+            {
+                conn.UpdateWeight();
+            }
 
             //update bias
-            foreach (Node hNode in hiddenLayers.SelectMany(hLayer => hLayer))
+            for (int i = 0; i < hiddenLayers.Length; i++)
+            {
+                foreach (Node node in hiddenLayers[i])
+                {
+                    node.UpdateBias();
+                }
+            }
+            /*foreach (Node hNode in hiddenLayers.SelectMany(hLayer => hLayer))
             {
                 hNode.UpdateBias();
+            }*/
+            foreach (Node outputNode in outputNodes)
+            {
+                outputNode.UpdateBias();
             }
-            outputNodes.ToList().ForEach(e => e.UpdateBias());
+            //outputNodes.ToList().ForEach(e => e.UpdateBias());
 
             if(DEBUG) Console.WriteLine(this);
 
@@ -151,6 +165,7 @@ namespace DataMining.Neural_Networks
                 
             }
             if(DEBUG) Console.WriteLine("{0} out of {1} correct", numCorrect, trainingInput.Length);
+            if (DEBUG) Console.ReadLine();
             return numCorrect;
         }
 

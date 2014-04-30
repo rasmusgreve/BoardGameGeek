@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DataMining.Neural_Networks;
 using System.Threading;
+using DataMiningIndividual;
 
-namespace DataMiningIndividual
+namespace DataMining
 {
     class Program
     {
@@ -18,45 +19,9 @@ namespace DataMiningIndividual
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
-            Console.WriteLine("Testing 123");
-            NeuralNetwork nn = new NeuralNetwork(2,1,1,1);
-            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
-            double[][] output = new[] {new[] {0.0}, new[] {1.0}, new[] {1.0}, new[] {0.0}};
-            //double[][][] training = LoadTestData("XOR test data.txt");
-            int result = 0;
-            int iteration = 1;
-            while (result < output.Length && iteration < 50000)
-            {
-                result = nn.runSession(input, output);
-                Console.WriteLine("iteration {0}, result {1} out of {2}",iteration,result,output.Length);
-                iteration++;
-            }
             //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            DataMining.FrequentPatternAnalysis();
             Console.ReadLine();
-        }
-
-        private static double[][][] LoadTestData(string xorTestDataTxt)
-        {
-            double[][] input = new double[4][];
-            double[][] output = new double[4][];
-            StreamReader f = File.OpenText(xorTestDataTxt);
-            int i = 0;
-            while (!f.EndOfStream)
-            {
-                string l = f.ReadLine();
-                string[] all = l.Split(':');
-                string outp = all.Last();
-                string[] inp = all.First().Split(' ');
-                output[i] = new []{Convert.ToDouble(outp)};
-                input[i] = new double[inp.Length];
-                for (int j = 0; j < inp.Length; j++)
-                {
-                    input[i][j] = Convert.ToDouble(inp);
-                }
-
-                i++;
-            }
-            return new[] {input, output};
         }
 
         /// <summary>
@@ -81,7 +46,7 @@ namespace DataMiningIndividual
             Console.WriteLine("Read link file");
 
             List<DataLine> answers = DataLine.ParseFixed(data);
-            answers = answers.Take(5000).ToList();
+            answers = answers.Take(20000).ToList();
 
             List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
                 .Take(5000).ToList();
@@ -121,58 +86,6 @@ namespace DataMiningIndividual
                 Print(output,clusters[c] + "\n");
             }
             */
-            // Apriori
-            /*var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
-            int supportThreshold = answers.Count / 20;
-            Console.WriteLine("Datalines: " + answers.Count);
-            List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
-            foreach (Tuple<List<string>, int> list in patterns)
-            {
-                //TODO: Replace ints with names in list.Item1
-                for (int i = 0; i < list.Item1.Count; i++)
-                {
-                    try
-                    {
-                        int v = int.Parse(list.Item1[i]);
-                        list.Item1[i] = DataLine.IDtoLabel(v);
-                    }
-                    catch
-                    {
-                    }
-                }
-                Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
             }
-
-            Print(output,"");*/
-            /*
-
-            string aprioriLabel = "";
-            // Assiciation Rules
-            List<Tuple<List<string>, List<string>, double>> ass = DataMining.AprioriAssociationRules(answers, patterns.Select(p => p.Item1).ToList(), aprioriLabel, 0.7);
-            foreach (Tuple<List<string>, List<string>, double> assiciation in ass)
-            {
-                Print(output, "[" + string.Join(",", assiciation.Item1) + "] => [" + string.Join(",", assiciation.Item2) + "] == " + assiciation.Item3);
-            }
-            */
-            Console.WriteLine("DONE");
         }
-
-        /// <summary>
-        /// Prints the ToString() value of the given object to the Stream.
-        /// </summary>
-        /// <param name="target">The stream to write to.</param>
-        /// <param name="o">The object that wants written.</param>
-        private static void Print(TextWriter target, Object o) { Print(target,o.ToString()); }
-
-        /// <summary>
-        /// Prints the given string to the Stream.
-        /// </summary>
-        /// <param name="target">The stream to write to.</param>
-        /// <param name="str">The string that wants written.</param>
-        private static void Print(TextWriter target, String str)
-        {
-            target.WriteLine(str);
-            target.Flush();
-        }
-    }
 }

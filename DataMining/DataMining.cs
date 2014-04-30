@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataMiningIndividual;
+using DataMining.Neural_Networks;
+using System.Diagnostics;
 
-namespace DataMiningIndividual
+namespace DataMining
 {
     /// <summary>
     /// A static library for performing Data Mining operations on Collections of
@@ -126,6 +129,51 @@ namespace DataMiningIndividual
             return clusters.ToList();
         }
 
+        public static void FrequentPatternAnalysis()
+        {
+            double support = .05;
+            double confidence = .5;
+            int nbElements = 100000;
+
+            string[][] data = CSVParser.ReadDataFile("data2014-04-03_03-35-14.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+            answers = answers.Take(nbElements).ToList();
+
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            // Apriori
+            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
+            int supportThreshold = (int)(answers.Count * support);
+            Console.WriteLine("Apriori with suppport: "+support);
+            Console.WriteLine("Datalines: " + answers.Count);
+            var patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
+            patterns.Sort((tuple, tuple1) => tuple.Item2 - tuple1.Item2);
+            foreach (Tuple<List<string>, int> list in patterns)
+            {
+                Console.WriteLine("Support: " + list.Item2 + " / " + Math.Round((100d * list.Item2) / answers.Count, 1) + "%: [" + string.Join(",", list.Item1.Select(DataLine.IDtoLabel)) + "]");
+            }
+
+            Console.WriteLine("Now doing association mining with confidence: "+confidence);
+            //string aprioriLabel = "";
+
+            // Assiciation Rules
+            var ass = DataMining.AprioriAssociationRules(answers, patterns, confidence);
+
+            ass.Sort((tuple, tuple1) => Math.Sign(tuple.Item4 - tuple1.Item4));
+
+            foreach (var cheek in ass)
+                Console.WriteLine("Conf=" + Math.Round(cheek.Item3 * 100, 1) + "% lift=" + Math.Round(cheek.Item4, 2) + ": [" + string.Join(",", cheek.Item1.Select(DataLine.IDtoLabel)) + "] => \t[" + string.Join(",", cheek.Item2.Select(DataLine.IDtoLabel)) + "]");
+            Console.WriteLine("Done with frequent pattern analysis!");
+            stopwatch.Stop();
+            Console.WriteLine("Time: "+stopwatch.ElapsedMilliseconds);
+        }
+
         /// <summary>
         /// Performs Apriori on the given dataset at a specific string array label in order
         /// to find frequent patterns of values.
@@ -164,7 +212,7 @@ namespace DataMiningIndividual
             var ret = Apriori(data, supportThreshold, aPrioriLabel);
 
             // Cleanup: Delete the generated line
-            data.ForEach(line => line.hashStringArrays.Remove(aPrioriLabel));
+            //data.ForEach(line => line.hashStringArrays.Remove(aPrioriLabel));
 
             return ret;
         }
@@ -216,36 +264,51 @@ namespace DataMiningIndividual
         /// to only get grounded association rules.</param>
         /// <returns>A list of assoiciation rules containing the left term, right term
         /// and the calculated confidence of the association.</returns>
-        public static List<Tuple<List<string>, List<string>, double>> AprioriAssociationRules
-            (List<DataLine> data, List<List<string>> aprioriResult, string stringArrayLabel, double confidenceThreshold)
+        public static List<Tuple<List<string>, List<string>, double, double>> AprioriAssociationRules
+            (List<DataLine> data, List<Tuple<List<string>, int>> aprioriResult, double confidenceThreshold)
         {
-            List<Tuple<List<string>, List<string>, double>> result = new List<Tuple<List<string>, List<string>, double>>();
-            foreach(List<string> l in aprioriResult){
-                foreach (List<string> s in GetSubsetsDeep(l))
+            var result = new List<Tuple<List<string>, List<string>, double, double>>();
+            foreach (var superSet in aprioriResult.Where(it => it.Item1.Count >= 2)) //No association rules for sets with only one item
+            {
+                foreach (var subSet in GetSubsetsDeep(superSet.Item1))
                 {
-                    List<string> lminusS = new List<string>(l);
-                    s.ForEach(i => lminusS.Remove(i));
-
-                    double confidence = (CountSupport(l, data, stringArrayLabel) * 1.0) / CountSupport(s, data, stringArrayLabel);
-
-                    if (confidence > confidenceThreshold)
+                    double confidence = (1.0)*superSet.Item2/CountSupport(subSet, data, "aPrioriLabel"); //TODO: implement caching in stead of counting through entire data set again
+                    if (confidence >= confidenceThreshold)
                     {
-                        result.Add(new Tuple<List<string>, List<string>, double>(s, lminusS, confidence));
+                        var subtractedSet = SubtractSet(superSet.Item1, subSet);
+                        double baseSupport = CountSupport(subtractedSet, data, "aPrioriLabel")/(1.0*data.Count);
+                        double lift = confidence/baseSupport;
+                        result.Add(new Tuple<List<string>, List<string>, double, double>(subSet, subtractedSet, confidence, lift));
                     }
+
                 }
             }
-
             return result;
         }
 
         public static void BackPropagation(List<DataLine> historicalData)
         {
-            // Normalization of historical data
+            NeuralNetwork nn = new NeuralNetwork(2, 1, 1, 1);
+            Console.WriteLine("Testing 123");
+
+            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
+            double[][] output = new[] { new[] { 0.0 }, new[] { 1.0 }, new[] { 1.0 }, new[] { 0.0 } };
+            //double[][][] training = LoadTestData("XOR test data.txt");
+            int result = 0;
+            int iteration = 1;
+            while (result < output.Length && iteration < 10000)
+            {
+                result = nn.RunSession(input, output);
+                Console.WriteLine("iteration {0}, result {1} out of {2}", iteration, result, input.Length);
+                iteration++;
+            }
+
+            /*// Normalization of historical data
             NormalizeHistorical(historicalData);
 
             // Training of NN
 
-            // Verification
+            // Verification*/
         }
 
         #region ------------- Private Helper Classes --------------
@@ -324,6 +387,11 @@ namespace DataMiningIndividual
             }
 
             return strings + doubles + booleans + stringArrays;
+        }
+
+        private static List<string> SubtractSet(IEnumerable<string> superSet, ICollection<string> subSet)
+        {
+            return superSet.Where(s => !subSet.Contains(s)).ToList();
         }
 
         private static double Dissimilarity(DataLine a, KMeanCluster c)
@@ -525,7 +593,7 @@ namespace DataMiningIndividual
                     year.ForEach(g => g.hashDoubleArrays.Keys.ForEach(k => g.hashDoubleArrays[k][i] = (g.hashDoubleArrays[k][i] - min) / (max - min)));
                 }
             }
-
+            Console.WriteLine("line");
         }
 
         #endregion
