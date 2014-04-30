@@ -37,5 +37,14 @@ namespace BoardGameGeek
 
             return new FiveNumSum<T>(min,max,sf,tf,median);
         }
+
+        public override string ToString()
+        {
+            return "Min: "+Min+
+                   ", Q1: "+TwentyFive+
+                   ", Q2: "+Median+
+                   ", Q3: "+SeventyFive+
+                   ", Max: "+Max;
+        }
     }
 }

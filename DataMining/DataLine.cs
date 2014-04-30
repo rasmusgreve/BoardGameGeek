@@ -129,11 +129,16 @@ namespace DataMiningIndividual
             result.hashDoubles[names[0]] = Double.Parse(data[0]); 			 //id
             result.hashStrings[names[1]] = data[1];             //name
             result.hashStrings[names[2]] = "year_published " + data[2];    //year_published
+            result.hashDoubles[names[2]] = Double.Parse(data[2]);    //year_published
+            result.hashDoubles[names[3]] = Double.Parse(data[3]);     //min_players
             result.hashStrings[names[3]] = "min_players " + data[3];     //min_players
+            result.hashDoubles[names[4]] = Double.Parse(data[4]);     //max_players
             result.hashStrings[names[4]] = "max_players " + data[4];       //max_players
             result.hashStrings[names[5]] = "playingtime " + data[5];         //playingtime
+            result.hashDoubles[names[5]] = Double.Parse(data[5]);         //playingtime
             result.hashDoubles[names[6]] = Double.Parse(data[6]);             //min_age
             result.hashDoubles[names[7]] = Double.Parse(data[7]);             //users_rated
+            result.hashDoubles[names[8]] = Double.Parse(data[8]);       //average_rating
             result.hashStrings[names[8]] = "average_rating " + data[8];       //average_rating
             result.hashDoubles[names[9]] = Double.Parse(data[9]);             //rating_stddev
             result.hashDoubles[names[10]] = Double.Parse(data[10]);           //num_owned

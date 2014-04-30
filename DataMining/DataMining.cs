@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BoardGameGeek;
 using DataMiningIndividual;
 using DataMining.Neural_Networks;
 using System.Diagnostics;
@@ -129,6 +130,13 @@ namespace DataMining
             return clusters.ToList();
         }
 
+        public static Tuple<FiveNumSum<double>, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMaxThreshold)
+        {
+            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
+            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMaxThreshold);
+            return new Tuple<FiveNumSum<double>, int>(first, second);
+        }
+
         public static void FrequentPatternAnalysis()
         {
             double support = .05;
@@ -143,8 +151,55 @@ namespace DataMining
 
             List<DataLine> answers = DataLine.ParseFixed(data);
             answers = answers.Take(nbElements).ToList();
+            var ageList = new List<double>();
+            var timeList = new HashSet<double>();
+            var ratingList = new HashSet<double>();
+            int timeR = 0;
+            foreach (var dl in answers)
+            {
+                var min_age = dl.hashDoubles["min_age"];
+                if(min_age != null && min_age <= 90)
+                    ageList.Add((double)min_age);
 
+                var playingtime = dl.hashDoubles["playingtime"];
+                if (playingtime != null && playingtime <= 1000)
+                    timeList.Add((double) playingtime);
+                else
+                    timeR++;
 
+                var average_rating = dl.hashDoubles["average_rating"];
+                if (average_rating != null)
+                    ratingList.Add((double)average_rating);
+
+                if (min_age > 90)
+                    Console.WriteLine(dl.hashDoubles["id"] + ": min_age: " + min_age);
+                if (playingtime > 1000)
+                    Console.WriteLine(dl.hashDoubles["id"] + ": playingtime: " + playingtime);
+            }
+            /* Console.WriteLine("min_age");
+            foreach (var d in ageSet.OrderBy(d => d))
+            {
+                Console.WriteLine("\t" + d);
+            }
+            Console.WriteLine("playingtime");
+            foreach (var d in timeSet.OrderBy(d => d))
+            {
+                Console.WriteLine("\t" + d);
+            }*/
+
+            string label = "min_players";
+            var tup = BoxPlot(answers, label, 20);
+            Console.WriteLine(label+"("+tup.Item2+" removed): "+tup.Item1);
+
+            label = "max_players";
+            tup = BoxPlot(answers, label, 100);
+            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
+
+            label = "year_published";
+            tup = BoxPlot(answers, label, int.MaxValue);
+            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
+
+            Console.ReadLine();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // Apriori
