@@ -242,19 +242,47 @@ namespace DataMining
 
         public static void BackPropagation(List<DataLine> historicalData)
         {
-            NeuralNetwork nn = new NeuralNetwork(2, 1, 1, 1);
-            Console.WriteLine("Testing 123");
+            int RESTARTS = 0;
+            int ITERATIONS = 10000;
 
             double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
             double[][] output = new[] { new[] { 0.0 }, new[] { 1.0 }, new[] { 1.0 }, new[] { 0.0 } };
-            //double[][][] training = LoadTestData("XOR test data.txt");
-            int result = 0;
-            int iteration = 1;
-            while (result < output.Length && iteration < 10000)
+
+            int restarts = 0;
+
+            while (restarts <= RESTARTS)
             {
-                result = nn.RunSession(input, output);
-                Console.WriteLine("iteration {0}, result {1} out of {2}", iteration, result, input.Length);
-                iteration++;
+                NeuralNetwork nn = new NeuralNetwork(2, 1, 2, 1);
+
+                int i = 0;
+                Boolean allCorrect = false;
+
+                while (!allCorrect && i < ITERATIONS)
+                {
+                    Console.WriteLine("----- Running Training " + i + " -----");
+                    allCorrect = nn.RunSession(input, output) == input.Length;
+
+                    i++;
+                }
+
+                if (allCorrect)
+                {
+                    Console.WriteLine("Complete after " + i + " runs.");
+                    Console.WriteLine(nn);
+                    break;
+                }
+                else
+                {
+                    restarts++;
+                    if (restarts <= RESTARTS)
+                    {
+                        Console.WriteLine("Restart #" + restarts);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Max restarts exceeded.");
+                    }
+                }
             }
 
             /*// Normalization of historical data

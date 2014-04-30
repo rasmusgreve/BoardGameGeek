@@ -6,9 +6,9 @@ namespace DataMining.Neural_Networks
         public Node To { get; private set; }
         public double Weight{ get; private set; }
 
-        public Connection(double init, Node fromNode, Node toNode)
+        public Connection(double weight, Node fromNode, Node toNode)
         {
-            Weight = init;
+            Weight = weight;
             From = fromNode;
             To = toNode;
 
@@ -19,8 +19,6 @@ namespace DataMining.Neural_Networks
         public void ChangeWeight(double change)
         {
             Weight += change;
-            if (Weight < -1) Weight = -1;
-            if (Weight > 1) Weight = 1;
         }
 
         public void UpdateWeight()

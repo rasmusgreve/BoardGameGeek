@@ -73,7 +73,7 @@ namespace DataMining.Neural_Networks
 
         public double RandStart()
         {
-            return (rand.NextDouble()*2)-1.0;
+            return (rand.NextDouble()*2.0)-1.0;
         }
 
         public double[] CalculateOutput(double[] inputVariables)
@@ -92,7 +92,9 @@ namespace DataMining.Neural_Networks
             for (int i = 0; i < inputNodes.Length; i++)
             {
                 inputNodes[i].InputValue = trainingInput[i];
+                if (DEBUG) Console.WriteLine("Input " + (i + 1) + " = " + trainingInput[i]);
             }
+            
 
             if(DEBUG) Console.WriteLine("Output=");
             bool match = true;
@@ -100,11 +102,12 @@ namespace DataMining.Neural_Networks
             {
                 //forward operation
                 double result = outputNodes[i].ForwardOperation();
+
                 int rounded = (int) Math.Round(result);
                 int target = (int) Math.Round(trainingOutput[i]);
 
-                if (DEBUG) Console.WriteLine("\t{0}: {1} - Target={2}", i, result, trainingOutput[i]);
-                if (DEBUG) Console.WriteLine("\t{0}(int): {1} - Target(int)={2}", i, rounded, target);
+                if (DEBUG) Console.WriteLine("\tO{0}: {1} - Target={2}", i, result, trainingOutput[i]);
+                if (DEBUG) Console.WriteLine("\tO{0}(int): {1} - Target(int)={2}", i, rounded, target);
 
                 match = match && (target == rounded);
             }
@@ -148,7 +151,7 @@ namespace DataMining.Neural_Networks
                 outputNode.UpdateBias();
             }
             //outputNodes.ToList().ForEach(e => e.UpdateBias());
-
+            if (DEBUG) Console.WriteLine("---------Final Structure--------");
             if(DEBUG) Console.WriteLine(this);
 
             return match;
@@ -157,11 +160,16 @@ namespace DataMining.Neural_Networks
         public int RunSession(double[][] trainingInput, double[][] trainingOutput)
         {
             int numCorrect = 0;
+            if(DEBUG)Console.WriteLine(this);
 
             for (int i = 0; i < trainingInput.Length; i++)
             {
+                if(DEBUG) Console.WriteLine("----------Iteration " + (i + 1) + "-----------");
                 bool match = RunTraining(trainingInput[i], trainingOutput[i]);
+                
                 if (match) numCorrect++;
+                
+                if(DEBUG) Console.ReadLine();
                 
             }
             if(DEBUG) Console.WriteLine("{0} out of {1} correct", numCorrect, trainingInput.Length);
@@ -190,10 +198,10 @@ namespace DataMining.Neural_Networks
 
         private void NodeToBuilder(Node node, StringBuilder strB)
         {
-            strB.AppendFormat("{0}: bias={1}\n",node, node.Bias);
+            strB.AppendFormat("{0}: bias={1}\n",node.GetHashCode(), node.Bias);
             foreach (Connection conn in node.OutCon)
             {
-                strB.AppendFormat("\t-> {0} = {1}\n", conn.To, conn.Weight);
+                strB.AppendFormat("\t-> {0} = {1}\n", conn.To.GetHashCode(), conn.Weight);
             }
         }
     }

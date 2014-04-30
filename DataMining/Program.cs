@@ -19,6 +19,7 @@ namespace DataMining
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
+            DataMining.BackPropagation(null);
             //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
             Console.ReadLine();
         }
