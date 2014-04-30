@@ -288,53 +288,11 @@ namespace DataMining
 
         public static void BackPropagation(List<DataLine> historicalData)
         {
-            int RESTARTS = 0;
-            int ITERATIONS = 10000;
-
-            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
-            double[][] output = new[] { new[] { 0.0 }, new[] { 1.0 }, new[] { 1.0 }, new[] { 0.0 } };
-
-            int restarts = 0;
-
-            while (restarts <= RESTARTS)
-            {
-                NeuralNetwork nn = new NeuralNetwork(2, 1, 2, 1);
-
-                int i = 0;
-                Boolean allCorrect = false;
-
-                while (!allCorrect && i < ITERATIONS)
-                {
-                    Console.WriteLine("----- Running Training " + i + " -----");
-                    allCorrect = nn.RunSession(input, output) == input.Length;
-
-                    i++;
-                }
-
-                if (allCorrect)
-                {
-                    Console.WriteLine("Complete after " + i + " runs.");
-                    Console.WriteLine(nn);
-                    break;
-                }
-                else
-                {
-                    restarts++;
-                    if (restarts <= RESTARTS)
-                    {
-                        Console.WriteLine("Restart #" + restarts);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Max restarts exceeded.");
-                    }
-                }
-            }
-
-            /*// Normalization of historical data
-            NormalizeHistorical(historicalData);
+            // Normalization of historical data
+            DataLine[][] years = NormalizeHistorical(historicalData);
 
             // Training of NN
+            NeuralNetwork nn = new NeuralNetwork(5, 1, 2, 2);
 
             // Verification*/
         }
@@ -602,9 +560,9 @@ namespace DataMining
 
         #endregion
 
-        #region ------------- Apriori Helper Methods --------------
+        #region --------- Backpropagation Helper Methods ----------
 
-        private static void NormalizeHistorical(List<DataLine> data)
+        private static DataLine[][] NormalizeHistorical(List<DataLine> data)
         {
             DataLine[][] groups = data.GroupBy(bg => bg.hashStrings["year_published"]).Select(g => g.ToArray()).ToArray();
 
@@ -621,7 +579,8 @@ namespace DataMining
                     year.ForEach(g => g.hashDoubleArrays.Keys.ForEach(k => g.hashDoubleArrays[k][i] = (g.hashDoubleArrays[k][i] - min) / (max - min)));
                 }
             }
-            Console.WriteLine("line");
+
+            return groups;
         }
 
         #endregion
