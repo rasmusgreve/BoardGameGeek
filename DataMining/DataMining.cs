@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataMiningIndividual;
+using DataMining.Neural_Networks;
 
-namespace DataMiningIndividual
+namespace DataMining
 {
     /// <summary>
     /// A static library for performing Data Mining operations on Collections of
@@ -164,7 +166,7 @@ namespace DataMiningIndividual
             var ret = Apriori(data, supportThreshold, aPrioriLabel);
 
             // Cleanup: Delete the generated line
-            data.ForEach(line => line.hashStringArrays.Remove(aPrioriLabel));
+            //data.ForEach(line => line.hashStringArrays.Remove(aPrioriLabel));
 
             return ret;
         }
@@ -216,36 +218,51 @@ namespace DataMiningIndividual
         /// to only get grounded association rules.</param>
         /// <returns>A list of assoiciation rules containing the left term, right term
         /// and the calculated confidence of the association.</returns>
-        public static List<Tuple<List<string>, List<string>, double>> AprioriAssociationRules
-            (List<DataLine> data, List<List<string>> aprioriResult, string stringArrayLabel, double confidenceThreshold)
+        public static List<Tuple<List<string>, List<string>, double, double>> AprioriAssociationRules
+            (List<DataLine> data, List<Tuple<List<string>, int>> aprioriResult, double confidenceThreshold)
         {
-            List<Tuple<List<string>, List<string>, double>> result = new List<Tuple<List<string>, List<string>, double>>();
-            foreach(List<string> l in aprioriResult){
-                foreach (List<string> s in GetSubsetsDeep(l))
+            var result = new List<Tuple<List<string>, List<string>, double, double>>();
+            foreach (var superSet in aprioriResult.Where(it => it.Item1.Count >= 2)) //No association rules for sets with only one item
+            {
+                foreach (var subSet in GetSubsetsDeep(superSet.Item1))
                 {
-                    List<string> lminusS = new List<string>(l);
-                    s.ForEach(i => lminusS.Remove(i));
-
-                    double confidence = (CountSupport(l, data, stringArrayLabel) * 1.0) / CountSupport(s, data, stringArrayLabel);
-
-                    if (confidence > confidenceThreshold)
+                    double confidence = (1.0)*superSet.Item2/CountSupport(subSet, data, "aPrioriLabel"); //TODO: implement caching in stead of counting through entire data set again
+                    if (confidence >= confidenceThreshold)
                     {
-                        result.Add(new Tuple<List<string>, List<string>, double>(s, lminusS, confidence));
+                        var subtractedSet = SubtractSet(superSet.Item1, subSet);
+                        double baseSupport = CountSupport(subtractedSet, data, "aPrioriLabel")/(1.0*data.Count);
+                        double lift = confidence/baseSupport;
+                        result.Add(new Tuple<List<string>, List<string>, double, double>(subSet, subtractedSet, confidence, lift));
                     }
+
                 }
             }
-
             return result;
         }
 
         public static void BackPropagation(List<DataLine> historicalData)
         {
-            // Normalization of historical data
+            NeuralNetwork nn = new NeuralNetwork(2, 1, 1, 1);
+            Console.WriteLine("Testing 123");
+
+            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
+            double[][] output = new[] { new[] { 0.0 }, new[] { 1.0 }, new[] { 1.0 }, new[] { 0.0 } };
+            //double[][][] training = LoadTestData("XOR test data.txt");
+            int result = 0;
+            int iteration = 1;
+            while (result < output.Length && iteration < 10000)
+            {
+                result = nn.RunSession(input, output);
+                Console.WriteLine("iteration {0}, result {1} out of {2}", iteration, result, input.Length);
+                iteration++;
+            }
+
+            /*// Normalization of historical data
             NormalizeHistorical(historicalData);
 
             // Training of NN
 
-            // Verification
+            // Verification*/
         }
 
         #region ------------- Private Helper Classes --------------
@@ -324,6 +341,11 @@ namespace DataMiningIndividual
             }
 
             return strings + doubles + booleans + stringArrays;
+        }
+
+        private static List<string> SubtractSet(IEnumerable<string> superSet, ICollection<string> subSet)
+        {
+            return superSet.Where(s => !subSet.Contains(s)).ToList();
         }
 
         private static double Dissimilarity(DataLine a, KMeanCluster c)

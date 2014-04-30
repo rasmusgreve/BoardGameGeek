@@ -7,7 +7,7 @@ namespace DataMining.Neural_Networks
 {
     public class NeuralNetwork
     {
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         private Node[] inputNodes, outputNodes;
         private Node[][] hiddenLayers;
@@ -126,17 +126,28 @@ namespace DataMining.Neural_Networks
             }
 
             //update weights
-            connections.ToList().ForEach(e => e.UpdateWeight());
+            foreach (Connection conn in connections)
+            {
+                conn.UpdateWeight();
+            }
 
             //update bias
-            foreach (Node[] hLayer in hiddenLayers)
+            for (int i = 0; i < hiddenLayers.Length; i++)
             {
-                foreach (Node hNode in hLayer)
+                foreach (Node node in hiddenLayers[i])
                 {
-                    hNode.UpdateBias();
+                    node.UpdateBias();
                 }
             }
-            outputNodes.ToList().ForEach(e => e.UpdateBias());
+            /*foreach (Node hNode in hiddenLayers.SelectMany(hLayer => hLayer))
+            {
+                hNode.UpdateBias();
+            }*/
+            foreach (Node outputNode in outputNodes)
+            {
+                outputNode.UpdateBias();
+            }
+            //outputNodes.ToList().ForEach(e => e.UpdateBias());
 
             if(DEBUG) Console.WriteLine(this);
 
@@ -154,6 +165,7 @@ namespace DataMining.Neural_Networks
                 
             }
             if(DEBUG) Console.WriteLine("{0} out of {1} correct", numCorrect, trainingInput.Length);
+            if (DEBUG) Console.ReadLine();
             return numCorrect;
         }
 

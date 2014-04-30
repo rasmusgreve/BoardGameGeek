@@ -159,14 +159,22 @@ namespace DataMiningIndividual
 
         public static Dictionary<string, Dictionary<int, string>> linkDictionary;
 
-        public static string IDtoLabel(int id)
+        public static string IDtoLabel(string idString)
         {
-            if (id < MECHANIC)          return linkDictionary["categories"][id - CATEGORY];
-            if (id < BOARDGAMEFAMILY)   return linkDictionary["mechanics"][id - MECHANIC];
-            if (id < DESIGNER)          return linkDictionary["families"][id - BOARDGAMEFAMILY];
-            if (id < ARTIST)            return linkDictionary["designers"][id - DESIGNER];
-            if (id < PUBLISHER)         return linkDictionary["artists"][id - ARTIST];
-            return linkDictionary["publishers"][id - PUBLISHER];
+            try
+            {
+                int id = int.Parse(idString);
+                if (id < MECHANIC) return linkDictionary["categories"][id - CATEGORY];
+                if (id < BOARDGAMEFAMILY) return linkDictionary["mechanics"][id - MECHANIC];
+                if (id < DESIGNER) return linkDictionary["families"][id - BOARDGAMEFAMILY];
+                if (id < ARTIST) return linkDictionary["designers"][id - DESIGNER];
+                if (id < PUBLISHER) return linkDictionary["artists"][id - ARTIST];
+                return linkDictionary["publishers"][id - PUBLISHER];
+            }
+            catch (Exception)
+            {
+                return idString;
+            }
         }
 
         /// <summary>

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataMining.Neural_Networks;
 using System.Threading;
+using DataMiningIndividual;
 
-namespace DataMiningIndividual
+namespace DataMining
 {
     class Program
     {
@@ -17,8 +19,7 @@ namespace DataMiningIndividual
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
-            Console.WriteLine("Testing 123");
-            PerformDM(args.Length > 0 ? args[0] : "data2014-04-23_03-06-56.csv"); // "data2014-04-03_03-35-14.csv"
+            //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
             Console.ReadLine();
         }
 
@@ -44,7 +45,7 @@ namespace DataMiningIndividual
             Console.WriteLine("Read link file");
 
             List<DataLine> answers = DataLine.ParseFixed(data);
-            answers = answers.Take(5000).ToList();
+            answers = answers.Take(20000).ToList();
 
             List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
                 .Take(5000).ToList();
@@ -85,57 +86,28 @@ namespace DataMiningIndividual
             }
             */
             // Apriori
-            /*var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
-            int supportThreshold = answers.Count / 20;
+            var aprioriLabels = new string[] { "mechanics", "categories", "min_players", "max_players", "playingtime", "average_rating" };
+            int supportThreshold = answers.Count / 4;
             Console.WriteLine("Datalines: " + answers.Count);
-            List<Tuple<List<string>,int>> patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
+            var patterns = DataMining.Apriori(answers, supportThreshold, aprioriLabels);
+            patterns.Sort((tuple, tuple1) => tuple.Item2 - tuple1.Item2);
             foreach (Tuple<List<string>, int> list in patterns)
             {
-                //TODO: Replace ints with names in list.Item1
-                for (int i = 0; i < list.Item1.Count; i++)
-                {
-                    try
-                    {
-                        int v = int.Parse(list.Item1[i]);
-                        list.Item1[i] = DataLine.IDtoLabel(v);
-                    }
-                    catch
-                    {
-                    }
-                }
-                Print(output, "["+string.Join(",", list.Item1)+"] = "+list.Item2);
+                Console.WriteLine("Support: " + list.Item2 + " / " + Math.Round((100d * list.Item2) / answers.Count, 1) + "%: [" + string.Join(",", list.Item1.Select(DataLine.IDtoLabel)) + "]");
             }
+            
+         
+            //string aprioriLabel = "";
 
-            Print(output,"");*/
-            /*
-
-            string aprioriLabel = "";
             // Assiciation Rules
-            List<Tuple<List<string>, List<string>, double>> ass = DataMining.AprioriAssociationRules(answers, patterns.Select(p => p.Item1).ToList(), aprioriLabel, 0.7);
-            foreach (Tuple<List<string>, List<string>, double> assiciation in ass)
-            {
-                Print(output, "[" + string.Join(",", assiciation.Item1) + "] => [" + string.Join(",", assiciation.Item2) + "] == " + assiciation.Item3);
+            var ass = DataMining.AprioriAssociationRules(answers, patterns, 0.7);
+
+            Console.WriteLine();
+            ass.Sort((tuple, tuple1) => Math.Sign(tuple.Item4 - tuple1.Item4));
+            
+            foreach (var cheek in ass)
+
+                Console.WriteLine("Conf=" + Math.Round(cheek.Item3*100, 1) + "% lift=" + Math.Round(cheek.Item4, 2)+": [" + string.Join(",", cheek.Item1.Select(DataLine.IDtoLabel)) + "] => \t[" + string.Join(",", cheek.Item2.Select(DataLine.IDtoLabel)) + "]");
             }
-            */
-            Console.WriteLine("DONE");
         }
-
-        /// <summary>
-        /// Prints the ToString() value of the given object to the Stream.
-        /// </summary>
-        /// <param name="target">The stream to write to.</param>
-        /// <param name="o">The object that wants written.</param>
-        private static void Print(TextWriter target, Object o) { Print(target,o.ToString()); }
-
-        /// <summary>
-        /// Prints the given string to the Stream.
-        /// </summary>
-        /// <param name="target">The stream to write to.</param>
-        /// <param name="str">The string that wants written.</param>
-        private static void Print(TextWriter target, String str)
-        {
-            target.WriteLine(str);
-            target.Flush();
-        }
-    }
 }

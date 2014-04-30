@@ -21,6 +21,7 @@ namespace DataMining.Neural_Networks
             InputValue = 0.0;
             OutputValue = 0.0;
             ErrorValue = 0.0;
+            Bias = 1.0;
             
             Bias = initialBias;
 
@@ -36,9 +37,13 @@ namespace DataMining.Neural_Networks
                 return InputValue;
             }
 
-            double S = Bias + InCon.Sum(conn => conn.From.ForwardOperation()*conn.Weight);
+            double S = Bias; //+ InCon.Sum(conn => conn.From.ForwardOperation()*conn.Weight);
+            foreach (Connection conn in InCon)
+            {
+                S += conn.From.ForwardOperation()*conn.Weight;
+            }
 
-            double A = 1.0/(1.0 + Math.Pow(Math.E, -S));
+            double A = 1.0/(1.0 + Math.Pow(Math.E, -1.0 * S));
             OutputValue = A;
             return A;
         }
