@@ -489,6 +489,7 @@ namespace DataMiningIndividual
             builder.Append("[");
             hashStrings.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + (hashStrings[k] ?? "null") + ",")); // hashStringArrays[k].Aggregate("",(agg,cur) => agg + ", "+ (cur ?? "null"))
             hashStringArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashStringArrays[k] == null ? "null" : string.Join(",",hashStringArrays[k])) + "],"));
+            hashDoubleArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashDoubleArrays[k] == null ? "null" : string.Join(",", hashDoubleArrays[k])) + "],"));
             hashDates.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDates[k] + ","));
             hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDoubles[k] + ","));
             hashBooleans.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashBooleans[k] + ","));

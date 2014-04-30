@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DataMiningIndividual;
 
 namespace DataMining.Neural_Networks
 {
@@ -52,7 +53,7 @@ namespace DataMining.Neural_Networks
                     }
                     else //hidden layer to hidden layer
                     {
-                        for (int k = 0; k < inputNum; k++)
+                        for (int k = 0; k < hiddenNum; k++)
                         {
                             connections.Add(new Connection(RandStart(), hiddenLayers[i - 1][k], curNode));
 
@@ -78,6 +79,11 @@ namespace DataMining.Neural_Networks
 
         public double[] CalculateOutput(double[] inputVariables)
         {
+            for (int i = 0; i < inputNodes.Length; i++)
+            {
+                inputNodes[i].InputValue = inputVariables[i];
+            }
+
             double[] result = new double[outputNodes.Length];
             for (int i = 0; i < result.Length; i++)
             {
@@ -172,7 +178,7 @@ namespace DataMining.Neural_Networks
                 if(DEBUG) Console.ReadLine();
                 
             }
-            if(DEBUG) Console.WriteLine("{0} out of {1} correct", numCorrect, trainingInput.Length);
+            Console.WriteLine("{0} out of {1} correct", numCorrect, trainingInput.Length);
             if (DEBUG) Console.ReadLine();
             return numCorrect;
         }

@@ -290,11 +290,44 @@ namespace DataMining
         {
             // Normalization of historical data
             DataLine[][] years = NormalizeHistorical(historicalData);
+            List<DataLine> spiel = DataLine.ParseInferred(CSVParser.ReadDataFile("spiel_des_jahres.csv", ";", null));
+            //int[] nominees = new[] { 98778, 131260, 137297, 107529, 117959, 90009, 25669, 65244, 72991, 39856, 66188, 37380, 217, 22348, 36218, 35497, 40628, 40393, 30549, 34585, 34227, 34635, 29223, 34084, 27588, 22278, 25643, 13883, 22345, 21790, 20080, 21882, 17534, 22287 };
 
             // Training of NN
-            NeuralNetwork nn = new NeuralNetwork(5, 1, 2, 2);
+            NeuralNetwork nn = new NeuralNetwork(25, 1, 2, 2);
+            DataLine[] years0 = CreateOversampling(years[0].Union(years[1]).Union(years[2]).ToArray(), spiel);
+            double[] year0nominees = years0.Select(g => IsGameNominee(g,spiel) ? 1.0 : 0.0).ToArray();
+            Console.WriteLine(string.Join(",", year0nominees));
+            TrainNetwork(nn, years0, year0nominees);
 
-            // Verification*/
+            // Verification
+            int true_positive = 0;
+            int false_positive = 0;
+            int true_negative = 0;
+            int false_negative = 0;
+            foreach (DataLine g in years[3])
+            {
+                double[] input = PrepareInput(g);
+                bool result = nn.CalculateOutput(input)[0] > 0.5;
+                bool reality = IsGameNominee(g, spiel);
+                if (result && reality)
+                {
+                    true_positive++;
+                }
+                else if (result && !reality)
+                {
+                    false_positive++;
+                }
+                else if (!result && !reality)
+                {
+                    true_negative++;
+                }
+                else
+                {
+                    false_negative++;
+                }
+            }
+            Console.WriteLine("\nTP: {0}\nFP: {1}\nTN: {2}\nFN: {3}", true_positive, false_positive, true_negative, false_negative);
         }
 
         #region ------------- Private Helper Classes --------------
@@ -561,6 +594,61 @@ namespace DataMining
         #endregion
 
         #region --------- Backpropagation Helper Methods ----------
+
+        private static void TrainNetwork(NeuralNetwork nn, DataLine[] data, double[] nominee){
+            int ITERATIONS = 1000;
+
+            double[][] trainingInput = PrepareInput(data);
+            double[][] trainingOutput = PrepareOutput(nominee);
+
+            //Console.WriteLine(data[0].hashStrings["year_published"]);
+            //Console.WriteLine(data.Count(g => nominee.Any(n => g.hashDoubles["id"].ToString().Equals(n.ToString()))));
+
+            int i = 0;
+            Boolean allCorrect = false;
+
+            while (!allCorrect && i < ITERATIONS)
+            {
+                Console.WriteLine("----- Running Training " + i + " -----");
+                allCorrect = nn.RunSession(trainingInput, trainingOutput) == trainingInput.Length;
+                i++;
+            }
+
+            Console.WriteLine("Complete after " + i + " runs.");
+            Console.WriteLine(nn);
+        }
+
+        private static bool IsGameNominee(DataLine game, List<DataLine> nominees)
+        {
+            return nominees.Any(n => n.hashDoubles["game_id"].Equals(game.hashDoubles["id"]));
+        }
+
+        private static DataLine[] CreateOversampling(DataLine[] data, List<DataLine> nominee)
+        {
+            List<DataLine> result = data.ToList();
+            var nominees = result.Where(g => IsGameNominee(g,nominee)).ToList();
+
+            int multiply = result.Count / nominees.Count(); // adjust here
+            for (int i = 0; i < multiply; i++)
+                result.AddRange(nominees);
+
+            return result.ToArray();
+        }
+
+        private static double[] PrepareInput(DataLine game)
+        {
+            return game.hashDoubleArrays.SelectMany(kv => kv.Value).ToArray();
+        }
+
+        private static double[][] PrepareInput(DataLine[] data)
+        {
+            return data.Select(g => PrepareInput(g)).ToArray();
+        }
+
+        private static double[][] PrepareOutput(double[] output)
+        {
+            return output.Select(o => new[] { o }).ToArray();
+        }
 
         private static DataLine[][] NormalizeHistorical(List<DataLine> data)
         {
