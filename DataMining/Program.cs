@@ -18,7 +18,7 @@ namespace DataMiningIndividual
         static void Main(string[] args)
         {
             Console.WriteLine("Testing 123");
-            PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            PerformDM(args.Length > 0 ? args[0] : "data2014-04-23_03-06-56.csv"); // "data2014-04-03_03-35-14.csv"
             Console.ReadLine();
         }
 

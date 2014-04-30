@@ -525,7 +525,7 @@ namespace DataMiningIndividual
                     year.ForEach(g => g.hashDoubleArrays.Keys.ForEach(k => g.hashDoubleArrays[k][i] = (g.hashDoubleArrays[k][i] - min) / (max - min)));
                 }
             }
-
+            Console.WriteLine("line");
         }
 
         #endregion
