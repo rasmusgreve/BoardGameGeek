@@ -19,7 +19,9 @@ namespace DataMining
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
-            //PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null)).ToList();
+            DataMining.BackPropagation(historical);
+
             DataMining.FrequentPatternAnalysis();
             Console.ReadLine();
         }
@@ -48,8 +50,7 @@ namespace DataMining
             List<DataLine> answers = DataLine.ParseFixed(data);
             answers = answers.Take(20000).ToList();
 
-            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
-                .Take(5000).ToList();
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null)).ToList();
             Console.WriteLine("Historical Loaded");
 
             Console.WriteLine("Parsing Complete.\n");

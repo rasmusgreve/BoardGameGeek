@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BoardGameGeek;
 using DataMiningIndividual;
 using DataMining.Neural_Networks;
 using System.Diagnostics;
@@ -129,6 +130,13 @@ namespace DataMining
             return clusters.ToList();
         }
 
+        public static Tuple<FiveNumSum<double>, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMaxThreshold)
+        {
+            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
+            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMaxThreshold);
+            return new Tuple<FiveNumSum<double>, int>(first, second);
+        }
+
         public static void FrequentPatternAnalysis()
         {
             double support = .05;
@@ -143,8 +151,55 @@ namespace DataMining
 
             List<DataLine> answers = DataLine.ParseFixed(data);
             answers = answers.Take(nbElements).ToList();
+            var ageList = new List<double>();
+            var timeList = new HashSet<double>();
+            var ratingList = new HashSet<double>();
+            int timeR = 0;
+            foreach (var dl in answers)
+            {
+                var min_age = dl.hashDoubles["min_age"];
+                if(min_age != null && min_age <= 90)
+                    ageList.Add((double)min_age);
 
+                var playingtime = dl.hashDoubles["playingtime"];
+                if (playingtime != null && playingtime <= 1000)
+                    timeList.Add((double) playingtime);
+                else
+                    timeR++;
 
+                var average_rating = dl.hashDoubles["average_rating"];
+                if (average_rating != null)
+                    ratingList.Add((double)average_rating);
+
+                if (min_age > 90)
+                    Console.WriteLine(dl.hashDoubles["id"] + ": min_age: " + min_age);
+                if (playingtime > 1000)
+                    Console.WriteLine(dl.hashDoubles["id"] + ": playingtime: " + playingtime);
+            }
+            /* Console.WriteLine("min_age");
+            foreach (var d in ageSet.OrderBy(d => d))
+            {
+                Console.WriteLine("\t" + d);
+            }
+            Console.WriteLine("playingtime");
+            foreach (var d in timeSet.OrderBy(d => d))
+            {
+                Console.WriteLine("\t" + d);
+            }*/
+
+            string label = "min_players";
+            var tup = BoxPlot(answers, label, 20);
+            Console.WriteLine(label+"("+tup.Item2+" removed): "+tup.Item1);
+
+            label = "max_players";
+            tup = BoxPlot(answers, label, 100);
+            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
+
+            label = "year_published";
+            tup = BoxPlot(answers, label, int.MaxValue);
+            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
+
+            Console.ReadLine();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // Apriori
@@ -288,27 +343,46 @@ namespace DataMining
 
         public static void BackPropagation(List<DataLine> historicalData)
         {
-            NeuralNetwork nn = new NeuralNetwork(2, 1, 1, 1);
-            Console.WriteLine("Testing 123");
-
-            double[][] input = { new[] { 0.0, 0.0 }, new[] { 1.0, 0.0 }, new[] { 0.0, 1.0 }, new[] { 1.0, 1.0 } };
-            double[][] output = new[] { new[] { 0.0 }, new[] { 1.0 }, new[] { 1.0 }, new[] { 0.0 } };
-            //double[][][] training = LoadTestData("XOR test data.txt");
-            int result = 0;
-            int iteration = 1;
-            while (result < output.Length && iteration < 10000)
-            {
-                result = nn.RunSession(input, output);
-                Console.WriteLine("iteration {0}, result {1} out of {2}", iteration, result, input.Length);
-                iteration++;
-            }
-
-            /*// Normalization of historical data
-            NormalizeHistorical(historicalData);
+            // Normalization of historical data
+            DataLine[][] years = NormalizeHistorical(historicalData);
+            List<DataLine> spiel = DataLine.ParseInferred(CSVParser.ReadDataFile("spiel_des_jahres.csv", ";", null));
+            //int[] nominees = new[] { 98778, 131260, 137297, 107529, 117959, 90009, 25669, 65244, 72991, 39856, 66188, 37380, 217, 22348, 36218, 35497, 40628, 40393, 30549, 34585, 34227, 34635, 29223, 34084, 27588, 22278, 25643, 13883, 22345, 21790, 20080, 21882, 17534, 22287 };
 
             // Training of NN
+            NeuralNetwork nn = new NeuralNetwork(25, 1, 2, 2);
+            DataLine[] years0 = CreateOversampling(years[0].Union(years[1]).Union(years[2]).ToArray(), spiel);
+            double[] year0nominees = years0.Select(g => IsGameNominee(g,spiel) ? 1.0 : 0.0).ToArray();
+            Console.WriteLine(string.Join(",", year0nominees));
+            TrainNetwork(nn, years0, year0nominees);
 
-            // Verification*/
+            // Verification
+            int true_positive = 0;
+            int false_positive = 0;
+            int true_negative = 0;
+            int false_negative = 0;
+            foreach (DataLine g in years[3])
+            {
+                double[] input = PrepareInput(g);
+                bool result = nn.CalculateOutput(input)[0] > 0.5;
+                bool reality = IsGameNominee(g, spiel);
+                if (result && reality)
+                {
+                    true_positive++;
+                }
+                else if (result && !reality)
+                {
+                    false_positive++;
+                }
+                else if (!result && !reality)
+                {
+                    true_negative++;
+                }
+                else
+                {
+                    false_negative++;
+                }
+            }
+            Console.WriteLine("\nTP: {0}\nFP: {1}\nTN: {2}\nFN: {3}", true_positive, false_positive, true_negative, false_negative);
         }
 
         #region ------------- Private Helper Classes --------------
@@ -574,9 +648,64 @@ namespace DataMining
 
         #endregion
 
-        #region ------------- Apriori Helper Methods --------------
+        #region --------- Backpropagation Helper Methods ----------
 
-        private static void NormalizeHistorical(List<DataLine> data)
+        private static void TrainNetwork(NeuralNetwork nn, DataLine[] data, double[] nominee){
+            int ITERATIONS = 1000;
+
+            double[][] trainingInput = PrepareInput(data);
+            double[][] trainingOutput = PrepareOutput(nominee);
+
+            //Console.WriteLine(data[0].hashStrings["year_published"]);
+            //Console.WriteLine(data.Count(g => nominee.Any(n => g.hashDoubles["id"].ToString().Equals(n.ToString()))));
+
+            int i = 0;
+            Boolean allCorrect = false;
+
+            while (!allCorrect && i < ITERATIONS)
+            {
+                Console.WriteLine("----- Running Training " + i + " -----");
+                allCorrect = nn.RunSession(trainingInput, trainingOutput) == trainingInput.Length;
+                i++;
+            }
+
+            Console.WriteLine("Complete after " + i + " runs.");
+            Console.WriteLine(nn);
+        }
+
+        private static bool IsGameNominee(DataLine game, List<DataLine> nominees)
+        {
+            return nominees.Any(n => n.hashDoubles["game_id"].Equals(game.hashDoubles["id"]));
+        }
+
+        private static DataLine[] CreateOversampling(DataLine[] data, List<DataLine> nominee)
+        {
+            List<DataLine> result = data.ToList();
+            var nominees = result.Where(g => IsGameNominee(g,nominee)).ToList();
+
+            int multiply = result.Count / nominees.Count(); // adjust here
+            for (int i = 0; i < multiply; i++)
+                result.AddRange(nominees);
+
+            return result.ToArray();
+        }
+
+        private static double[] PrepareInput(DataLine game)
+        {
+            return game.hashDoubleArrays.SelectMany(kv => kv.Value).ToArray();
+        }
+
+        private static double[][] PrepareInput(DataLine[] data)
+        {
+            return data.Select(g => PrepareInput(g)).ToArray();
+        }
+
+        private static double[][] PrepareOutput(double[] output)
+        {
+            return output.Select(o => new[] { o }).ToArray();
+        }
+
+        private static DataLine[][] NormalizeHistorical(List<DataLine> data)
         {
             DataLine[][] groups = data.GroupBy(bg => bg.hashStrings["year_published"]).Select(g => g.ToArray()).ToArray();
 
@@ -593,7 +722,8 @@ namespace DataMining
                     year.ForEach(g => g.hashDoubleArrays.Keys.ForEach(k => g.hashDoubleArrays[k][i] = (g.hashDoubleArrays[k][i] - min) / (max - min)));
                 }
             }
-            Console.WriteLine("line");
+
+            return groups;
         }
 
         #endregion
