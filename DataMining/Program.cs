@@ -22,7 +22,7 @@ namespace DataMining
             List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null)).ToList();
             DataMining.BackPropagation(historical);
 
-            DataMining.FrequentPatternAnalysis();
+            //DataMining.FrequentPatternAnalysis();
             Console.ReadLine();
         }
 

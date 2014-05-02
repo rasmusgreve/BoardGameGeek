@@ -53,7 +53,7 @@ namespace DataMiningIndividual
         /// <param name="list">The list it is called on.</param>
         /// <param name="seed">The seed used in the generation of random numbers
         /// for the shuffling.</param>
-        public static void Shuffle<T>(this IList<T> list, int seed)
+        public static IList<T> Shuffle<T>(this IList<T> list, int seed)
         {
             Random rng = new Random(seed);
             int n = list.Count;
@@ -65,6 +65,7 @@ namespace DataMiningIndividual
                 list[k] = list[n];
                 list[n] = value;
             }
+            return list;
         }
     }
 }

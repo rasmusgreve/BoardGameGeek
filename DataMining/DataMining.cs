@@ -348,9 +348,13 @@ namespace DataMining
             List<DataLine> spiel = DataLine.ParseInferred(CSVParser.ReadDataFile("spiel_des_jahres.csv", ";", null));
             //int[] nominees = new[] { 98778, 131260, 137297, 107529, 117959, 90009, 25669, 65244, 72991, 39856, 66188, 37380, 217, 22348, 36218, 35497, 40628, 40393, 30549, 34585, 34227, 34635, 29223, 34084, 27588, 22278, 25643, 13883, 22345, 21790, 20080, 21882, 17534, 22287 };
 
+            Console.WriteLine(years[0][0]);
+
             // Training of NN
-            NeuralNetwork nn = new NeuralNetwork(25, 1, 2, 2);
-            DataLine[] years0 = CreateOversampling(years[0].Union(years[1]).Union(years[2]).ToArray(), spiel);
+            var trainingset = years[0];// years[0].Union(years[1]).Union(years[2]).Union(years[3]).Union(years[4]).Union(years[5]);
+
+            NeuralNetwork nn = new NeuralNetwork(30, 1, 2, 2);
+            DataLine[] years0 = CreateOversampling(trainingset.ToArray(), spiel).ToList().Shuffle(1337).ToArray();
             double[] year0nominees = years0.Select(g => IsGameNominee(g,spiel) ? 1.0 : 0.0).ToArray();
             Console.WriteLine(string.Join(",", year0nominees));
             TrainNetwork(nn, years0, year0nominees);
@@ -360,7 +364,7 @@ namespace DataMining
             int false_positive = 0;
             int true_negative = 0;
             int false_negative = 0;
-            foreach (DataLine g in years[3])
+            foreach (DataLine g in years[1])
             {
                 double[] input = PrepareInput(g);
                 bool result = nn.CalculateOutput(input)[0] > 0.5;
@@ -712,7 +716,7 @@ namespace DataMining
             foreach (DataLine[] year in groups)
             {
                 Console.WriteLine("Normalizing year " + year[0].hashStrings["year_published"]);
-                for(int i = 0; i < year[0].hashDoubleArrays.First().Value.Length; i++) // each value in the historical data
+                for(int i = 0; i < 6; i++) // each value in the historical data
                 {
                     IEnumerable<double> values = year[0].hashDoubleArrays.Keys.SelectMany(k => year.Select(g => g.hashDoubleArrays[k][i]));
                     double min = values.Min();

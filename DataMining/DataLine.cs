@@ -101,7 +101,7 @@ namespace DataMiningIndividual
                 string name = names[i];
                 string[] splitted = data[i].Split(',');
 
-                double[] doubleArray = new double[5];
+                double[] doubleArray = new double[6];
                 for (int j = 0; j < doubleArray.Length; j++)
                 {
                     bool success = double.TryParse(splitted[j], 
@@ -493,8 +493,8 @@ namespace DataMiningIndividual
             StringBuilder builder = new StringBuilder();
             builder.Append("[");
             hashStrings.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + (hashStrings[k] ?? "null") + ",")); // hashStringArrays[k].Aggregate("",(agg,cur) => agg + ", "+ (cur ?? "null"))
-            hashStringArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashStringArrays[k] == null ? "null" : string.Join(",",hashStringArrays[k])) + "],"));
-            hashDoubleArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashDoubleArrays[k] == null ? "null" : string.Join(",", hashDoubleArrays[k])) + "],"));
+            hashStringArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashStringArrays[k] == null ? "null" : string.Join(";",hashStringArrays[k])) + "],"));
+            hashDoubleArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashDoubleArrays[k] == null ? "null" : string.Join(";", hashDoubleArrays[k])) + "],"));
             hashDates.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDates[k] + ","));
             hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDoubles[k] + ","));
             hashBooleans.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashBooleans[k] + ","));
