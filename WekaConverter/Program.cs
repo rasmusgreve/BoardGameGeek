@@ -53,7 +53,7 @@ namespace WekaConverter
                 d.hashStrings.Keys.ForEach(k => builder.Append("\"" + (d.hashStrings[k] == null ? "null" : d.hashStrings[k].Replace(separator, '-').Replace('"', '-').Replace('\'', '-')) + "\"" + separator));
                 d.hashDates.Keys.ForEach(k => builder.Append(d.hashDates[k].ToString() + separator));
                 d.hashDoubles.Keys.ForEach(k => builder.Append(((double)d.hashDoubles[k]).ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + separator));
-                d.hashBooleans.Keys.ForEach((k, i) => builder.Append(((bool)d.hashBooleans[k] ? "1" : "0") + separator));
+                d.hashBooleans.Keys.ForEach((k, i) => builder.Append(((bool)d.hashBooleans[k] ? "\"T\"" : "\"F\"") + separator));
 
                 builder.Length--;
 
