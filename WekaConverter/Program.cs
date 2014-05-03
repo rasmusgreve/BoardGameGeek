@@ -37,8 +37,14 @@ namespace WekaConverter
 
         private static void DiscretizeValues(List<DataLine> data)
         {
-            Console.WriteLine("\t- Not Implemented");
-            // http://technet.microsoft.com/en-us/library/ms174512.aspx
+            string label = "average_rating";
+
+            foreach (DataLine d in data)
+            {
+                double rating = (double)d.hashDoubles[label];
+                d.hashDoubles.Remove(label);
+                d.hashStrings["disc("+label+")"] = "disc "+Math.Round(rating).ToString();
+            }
         }
 
         private static void WriteToFile(List<DataLine> wekaData, string outputfile)

@@ -1,0 +1,111 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 500
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.ClassAssigner-Clast
+Instances:    62204
+Attributes:   152
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+users_rated <= 0: disc 0 (14027.0)
+users_rated > 0
+|   num_wanting <= 3
+|   |   categories 1047 "Miniatures" = F
+|   |   |   year_published <= 2008
+|   |   |   |   users_rated <= 4
+|   |   |   |   |   rating_stddev <= 0.065: disc 6 (5171.0/4118.0)
+|   |   |   |   |   rating_stddev > 0.065
+|   |   |   |   |   |   num_wishing <= 1
+|   |   |   |   |   |   |   users_rated <= 2: disc 4 (1595.0/1065.0)
+|   |   |   |   |   |   |   users_rated > 2
+|   |   |   |   |   |   |   |   num_wishing <= 0
+|   |   |   |   |   |   |   |   |   rating_stddev <= 1.23743: disc 6 (622.0/452.0)
+|   |   |   |   |   |   |   |   |   rating_stddev > 1.23743: disc 4 (534.0/385.0)
+|   |   |   |   |   |   |   |   num_wishing > 0: disc 6 (593.0/432.0)
+|   |   |   |   |   |   num_wishing > 1: disc 6 (1028.0/690.0)
+|   |   |   |   users_rated > 4
+|   |   |   |   |   mechanics 2026 "Hex-and-Counter" = F
+|   |   |   |   |   |   num_wishing <= 1
+|   |   |   |   |   |   |   num_trading <= 2
+|   |   |   |   |   |   |   |   rating_stddev <= 1.27528: disc 6 (661.0/445.0)
+|   |   |   |   |   |   |   |   rating_stddev > 1.27528: disc 5 (1110.0/720.0)
+|   |   |   |   |   |   |   num_trading > 2: disc 5 (826.0/459.0)
+|   |   |   |   |   |   num_wishing > 1
+|   |   |   |   |   |   |   num_trading <= 1: disc 6 (1033.0/631.0)
+|   |   |   |   |   |   |   num_trading > 1
+|   |   |   |   |   |   |   |   rating_stddev <= 1.37113: disc 6 (602.0/304.0)
+|   |   |   |   |   |   |   |   rating_stddev > 1.37113: disc 5 (1332.0/750.0)
+|   |   |   |   |   mechanics 2026 "Hex-and-Counter" = T: disc 6 (650.0/329.0)
+|   |   |   year_published > 2008
+|   |   |   |   rating_stddev <= 0.538516
+|   |   |   |   |   year_published <= 2011: disc 6 (970.0/740.0)
+|   |   |   |   |   year_published > 2011: disc 8 (755.0/565.0)
+|   |   |   |   rating_stddev > 0.538516: disc 6 (2488.0/1577.0)
+|   |   categories 1047 "Miniatures" = T: disc 6 (953.0/687.0)
+|   num_wanting > 3
+|   |   num_wishing <= 128
+|   |   |   rating_stddev <= 1.12591: disc 7 (845.0/556.0)
+|   |   |   rating_stddev > 1.12591
+|   |   |   |   playingtime <= 135
+|   |   |   |   |   num_trading <= 7
+|   |   |   |   |   |   num_wishing <= 25: disc 6 (1103.0/603.0)
+|   |   |   |   |   |   num_wishing > 25: disc 7 (578.0/285.0)
+|   |   |   |   |   num_trading > 7: disc 6 (2022.0/740.0)
+|   |   |   |   playingtime > 135: disc 7 (760.0/376.0)
+|   |   num_wishing > 128: disc 7 (1212.0/446.0)
+
+Number of Leaves  : 	24
+
+Size of the tree : 	47
+
+
+Time taken to build model: 4.92 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances       35951               57.7953 %
+Incorrectly Classified Instances     26253               42.2047 %
+Kappa statistic                          0.4563
+Mean absolute error                      0.0897
+Root mean squared error                  0.212 
+Relative absolute error                 61.4829 %
+Root relative squared error             78.5289 %
+Total Number of Instances            62204     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.103     0.017      0.265     0.103     0.148      0.838    disc 8
+                 0.303     0.044      0.499     0.303     0.377      0.838    disc 7
+                 0.705     0.324      0.359     0.705     0.476      0.798    disc 6
+                 0.293     0.073      0.355     0.293     0.321      0.808    disc 5
+                 0.163     0.037      0.284     0.163     0.207      0.836    disc 4
+                 1         0          1         1         1          1        disc 0
+                 0         0          0         0         0          0.874    disc 2
+                 0.088     0.013      0.195     0.088     0.122      0.859    disc 3
+                 0         0          0         0         0          0.869    disc 9
+                 0         0          0         0         0          0.923    disc 1
+                 0         0          0         0         0          0.919    disc 10
+Weighted Avg.    0.578     0.085      0.562     0.578     0.551      0.883
+
+=== Confusion Matrix ===
+
+     a     b     c     d     e     f     g     h     i     j     k   <-- classified as
+   360   964  1911   100   137     0     0    33     0     0     0 |     a = disc 8
+   265  2366  4598   344   169     0     0    58     0     0     0 |     b = disc 7
+   242  1091  8969  1583   673     0     0   160     0     0     0 |     c = disc 6
+    99   145  4398  2201   512     0     0   151     0     0     0 |     d = disc 5
+    71    30  2677  1309   830     0     0   174     0     0     0 |     e = disc 4
+     0     0     0     0     0 21041     0     0     0     0     0 |     f = disc 0
+    33     4   619   150   163     0     0   104     0     0     0 |     g = disc 2
+    33    11  1047   443   363     0     0   184     0     0     0 |     h = disc 3
+   126   112   338    18    18     0     0     7     0     0     0 |     i = disc 9
+    30     4   278    38    46     0     0    63     0     0     0 |     j = disc 1
+   100    19   168     8     8     0     0     8     0     0     0 |     k = disc 10
+
