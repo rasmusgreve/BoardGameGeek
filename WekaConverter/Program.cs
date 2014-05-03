@@ -27,13 +27,14 @@ namespace WekaConverter
             Console.WriteLine("* Writing games to Weka CSV-file ("+outputfile+")...");
             WriteToFile(wekaData, outputfile);
 
+            Console.WriteLine();
             Console.WriteLine("DONE");
             Console.ReadLine();
         }
 
         private static void WriteToFile(List<DataLine> wekaData, string outputfile)
         {
-            char separator = ';';
+            char separator = ',';
             StreamWriter writer = File.CreateText(outputfile);
 
             // top line
@@ -49,10 +50,10 @@ namespace WekaConverter
             foreach (DataLine d in wekaData)
             {
                 builder = new StringBuilder();
-                d.hashStrings.Keys.ForEach(k => builder.Append((d.hashStrings[k] ?? "null") + separator));
+                d.hashStrings.Keys.ForEach(k => builder.Append("\"" + (d.hashStrings[k] == null ? "null" : d.hashStrings[k].Replace(separator, '-').Replace('"', '-').Replace('\'', '-')) + "\"" + separator));
                 d.hashDates.Keys.ForEach(k => builder.Append(d.hashDates[k].ToString() + separator));
                 d.hashDoubles.Keys.ForEach(k => builder.Append(((double)d.hashDoubles[k]).ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + separator));
-                d.hashBooleans.Keys.ForEach((k, i) => builder.Append(d.hashBooleans[k].ToString() + separator));
+                d.hashBooleans.Keys.ForEach((k, i) => builder.Append(((bool)d.hashBooleans[k] ? "1" : "0") + separator));
 
                 builder.Length--;
 
