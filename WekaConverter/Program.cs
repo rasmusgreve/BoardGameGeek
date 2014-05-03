@@ -16,10 +16,13 @@ namespace WekaConverter
             String outputfile = file.Split('.')[0] + "-weka.csv";
 
             Console.WriteLine("* Loading CSV-file ("+file+")...");
-            String[][] rawData = CSVParser.ReadDataFile(file, ";", "null");
+            String[][] rawData = CSVParser.ReadDataFile(file, ";", "?");
 
             Console.WriteLine("* Parsing data...");
             List<DataLine> data = DataLine.ParseFixed(rawData);
+
+            Console.WriteLine("* Discretize numeric values");
+            DiscretizeValues(data);
 
             Console.WriteLine("* Expanding arrays to boolean parameters...");
             List<DataLine> wekaData = DivideLists(data);
@@ -30,6 +33,12 @@ namespace WekaConverter
             Console.WriteLine();
             Console.WriteLine("DONE");
             Console.ReadLine();
+        }
+
+        private static void DiscretizeValues(List<DataLine> data)
+        {
+            Console.WriteLine("\t- Not Implemented");
+            // http://technet.microsoft.com/en-us/library/ms174512.aspx
         }
 
         private static void WriteToFile(List<DataLine> wekaData, string outputfile)
