@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DataMiningIndividual
 {
 
-    class DataLine
+    public class DataLine
     {
 
         public const int CATEGORY           = 1000000;
@@ -126,37 +126,37 @@ namespace DataMiningIndividual
         public static DataLine ParseFixed(string[] data, string[] names)
         {
             DataLine result = new DataLine();
-            result.hashDoubles[names[0]] = Double.Parse(data[0]); 			 //id
+            result.hashDoubles[names[0]] = double.Parse(data[0], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo); 			 //id
             result.hashStrings[names[1]] = data[1];             //name
             result.hashStrings[names[2]] = "year_published " + data[2];    //year_published
-            result.hashDoubles[names[2]] = Double.Parse(data[2]);    //year_published
-            result.hashDoubles[names[3]] = Double.Parse(data[3]);     //min_players
+            result.hashDoubles[names[2]] = double.Parse(data[2]);    //year_published
+            result.hashDoubles[names[3]] = double.Parse(data[3], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);     //min_players
             result.hashStrings[names[3]] = "min_players " + data[3];     //min_players
-            result.hashDoubles[names[4]] = Double.Parse(data[4]);     //max_players
+            result.hashDoubles[names[4]] = double.Parse(data[4], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);     //max_players
             result.hashStrings[names[4]] = "max_players " + data[4];       //max_players
             result.hashStrings[names[5]] = "playingtime " + data[5];         //playingtime
-            result.hashDoubles[names[5]] = Double.Parse(data[5]);         //playingtime
-            result.hashDoubles[names[6]] = Double.Parse(data[6]);             //min_age
-            result.hashDoubles[names[7]] = Double.Parse(data[7]);             //users_rated
-            result.hashDoubles[names[8]] = Double.Parse(data[8]);       //average_rating
+            result.hashDoubles[names[5]] = double.Parse(data[5], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);         //playingtime
+            result.hashDoubles[names[6]] = double.Parse(data[6], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);             //min_age
+            result.hashDoubles[names[7]] = double.Parse(data[7], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);             //users_rated
+            result.hashDoubles[names[8]] = double.Parse(data[8], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);       //average_rating
             result.hashStrings[names[8]] = "average_rating " + data[8];       //average_rating
-            result.hashDoubles[names[9]] = Double.Parse(data[9]);             //rating_stddev
-            result.hashDoubles[names[10]] = Double.Parse(data[10]);           //num_owned
-            result.hashDoubles[names[11]] = Double.Parse(data[11]);           //num_trading
-            result.hashDoubles[names[12]] = Double.Parse(data[12]);           //num_wanting
-            result.hashDoubles[names[13]] = Double.Parse(data[13]);           //num_wishing
-            result.hashDoubles[names[14]] = Double.Parse(data[14]);           //num_comments
+            result.hashDoubles[names[9]] = double.Parse(data[9], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);             //rating_stddev
+            result.hashDoubles[names[10]] = double.Parse(data[10], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);           //num_owned
+            result.hashDoubles[names[11]] = double.Parse(data[11], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);           //num_trading
+            result.hashDoubles[names[12]] = double.Parse(data[12], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);           //num_wanting
+            result.hashDoubles[names[13]] = double.Parse(data[13], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);           //num_wishing
+            result.hashDoubles[names[14]] = double.Parse(data[14], System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);           //num_comments
             //result.hashDoubles[names[15]] = ParseDouble(data[15]);          //num_players_best
             //result.hashDoubles[names[16]] = ParseDouble(data[16]);          //num_players_rec
             //result.hashDoubles[names[17]] = ParseDouble(data[17]);          //num_players_notrec
             //result.hashDoubles[names[18]] = Double.Parse(data[18]);         //suggested_age
-            result.hashStringArrays[names[19]] = ParseStringArray(data[19], CATEGORY); //categories
-            result.hashStringArrays[names[20]] = ParseStringArray(data[20], MECHANIC); //mechanics
-            result.hashStringArrays[names[21]] = ParseStringArray(data[21], BOARDGAMEFAMILY); //boardgamefamilies
-            result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
-            result.hashStringArrays[names[23]] = ParseStringArray(data[23], DESIGNER); //designers
-            result.hashStringArrays[names[24]] = ParseStringArray(data[24], ARTIST); //artists
-            result.hashStringArrays[names[25]] = ParseStringArray(data[25], PUBLISHER); //publishers
+            result.hashStringArrays[names[19]] = ParseStringArray(data[19]);//, CATEGORY); //categories
+            result.hashStringArrays[names[20]] = ParseStringArray(data[20]);//, MECHANIC); //mechanics
+            //result.hashStringArrays[names[21]] = ParseStringArray(data[21]);//, BOARDGAMEFAMILY); //boardgamefamilies
+            //result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
+            //result.hashStringArrays[names[23]] = ParseStringArray(data[23]);//, DESIGNER); //designers
+            //result.hashStringArrays[names[24]] = ParseStringArray(data[24]);//, ARTIST); //artists
+            //result.hashStringArrays[names[25]] = ParseStringArray(data[25]);//, PUBLISHER); //publishers
 
             
             return result;
@@ -192,7 +192,7 @@ namespace DataMiningIndividual
 
 		    input = ParseString(input);//.Replace(",",".");
 		    try{
-			    return double.Parse(input);
+                return double.Parse(input, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.NumberFormatInfo.InvariantInfo);
 		    }catch(FormatException){
 			    // maybe mixed with text
 			    String[] split = input.Split(new char[]{' '},StringSplitOptions.RemoveEmptyEntries);
@@ -393,9 +393,13 @@ namespace DataMiningIndividual
             string[] output = ParseStringArray(input);
             for (int i = 0; i < output.Length;i++)
             {
-                int v = int.Parse(output[i]);
-                v += numberToAddToValue;
-                output[i] = v.ToString();   
+                try
+                {
+                    int v = int.Parse(output[i]);
+                    v += numberToAddToValue;
+                    output[i] = v.ToString();   
+                }
+                catch (FormatException){ /* do nothing */ }
             }
             return output;
         }
@@ -479,7 +483,7 @@ namespace DataMiningIndividual
         /// <summary>
         /// Just creates all Dictionaries.
         /// </summary>
-        private DataLine()
+        public DataLine()
         {
             hashDates = new Dictionary<string, DateTime?>();
             hashStrings = new Dictionary<string, string>();
@@ -496,7 +500,7 @@ namespace DataMiningIndividual
             hashStringArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashStringArrays[k] == null ? "null" : string.Join(";",hashStringArrays[k])) + "],"));
             hashDoubleArrays.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": [" + (hashDoubleArrays[k] == null ? "null" : string.Join(";", hashDoubleArrays[k])) + "],"));
             hashDates.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDates[k] + ","));
-            hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashDoubles[k] + ","));
+            hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + ((double)hashDoubles[k]).ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + ","));
             hashBooleans.Keys.ForEach(k => builder.Append("\"" + k + "\"" + ": " + hashBooleans[k] + ","));
 
             builder.Append("]");

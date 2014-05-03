@@ -4,7 +4,7 @@ using System.IO;
 
 namespace DataMiningIndividual
 {
-    class CSVParser
+    public class CSVParser
     {
 
         /// <summary>
