@@ -1,0 +1,126 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -C 0.25 -M 500
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R2-7,9-10,15-23-weka.filters.unsupervised.attribute.Remove-R77,117
+Instances:    62204
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+min_age <= 6
+|   mechanics (Hex-and-Counter) = F
+|   |   playingtime <= 0: (1) (6500.0/3787.0)
+|   |   playingtime > 0
+|   |   |   categories (Educational) = F
+|   |   |   |   categories (Print & Play) = F
+|   |   |   |   |   min_age <= 4
+|   |   |   |   |   |   min_players <= 2
+|   |   |   |   |   |   |   mechanics (Roll / Spin and Move) = F
+|   |   |   |   |   |   |   |   min_age <= 3
+|   |   |   |   |   |   |   |   |   playingtime <= 37: (2) (3443.0/2456.0)
+|   |   |   |   |   |   |   |   |   playingtime > 37: (3) (1612.0/1174.0)
+|   |   |   |   |   |   |   |   min_age > 3: (3) (840.0/611.0)
+|   |   |   |   |   |   |   mechanics (Roll / Spin and Move) = T
+|   |   |   |   |   |   |   |   categories (Children's Game) = F: (2) (1025.0/695.0)
+|   |   |   |   |   |   |   |   categories (Children's Game) = T: (1) (622.0/442.0)
+|   |   |   |   |   |   min_players > 2: (3) (833.0/604.0)
+|   |   |   |   |   min_age > 4
+|   |   |   |   |   |   categories (Children's Game) = F
+|   |   |   |   |   |   |   max_players <= 4: (1) (1089.0/814.0)
+|   |   |   |   |   |   |   max_players > 4: (4) (625.0/486.0)
+|   |   |   |   |   |   categories (Children's Game) = T: (4) (1864.0/1384.0)
+|   |   |   |   categories (Print & Play) = T: (2) (659.0/427.0)
+|   |   |   categories (Educational) = T
+|   |   |   |   min_age <= 0: (2) (607.0/396.0)
+|   |   |   |   min_age > 0: (1) (754.0/510.0)
+|   mechanics (Hex-and-Counter) = T: (4) (1050.0/747.0)
+min_age > 6
+|   mechanics (Hex-and-Counter) = F
+|   |   playingtime <= 7
+|   |   |   min_age <= 9: (1) (1838.0/1318.0)
+|   |   |   min_age > 9: (3) (2033.0/1507.0)
+|   |   playingtime > 7
+|   |   |   categories (Print & Play) = F
+|   |   |   |   categories (Educational) = F
+|   |   |   |   |   categories (Trivia) = F
+|   |   |   |   |   |   mechanics (Roll / Spin and Move) = F                                                                    -----\ GODE
+|   |   |   |   |   |   |   mechanics (Modular Board) = F
+|   |   |   |   |   |   |   |   mechanics (Area Control / Area Influence) = T: (5) (743.0/330.0) 44,4%
+|   |   |   |   |   |   |   |   mechanics (Area Control / Area Influence) = F
+|   |   |   |   |   |   |   |   |   categories (Economic) = T: (5) (831.0/376.0) 45,2%
+|   |   |   |   |   |   |   |   |   categories (Economic) = F
+|   |   |   |   |   |   |   |   |   |   mechanics (Variable Player Powers) = F
+|   |   |   |   |   |   |   |   |   |   |   categories (Miniatures) = F
+|   |   |   |   |   |   |   |   |   |   |   |   categories (Wargame) = F
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age <= 13
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   playingtime <= 42
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   min_players <= 2
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   mechanics (Hand Management) = T: (5) (999.0/650.0) 65,0%
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   mechanics (Hand Management) = F
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   categories (Card Game) = F: (4) (3345.0/2444.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   categories (Card Game) = T: (5) (1310.0/910.0) 69,5%
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   min_players > 2: (5) (1044.0/641.0) 61,4%
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   playingtime > 42: (5) (3493.0/2106.0) 60,3%
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age > 13: (4) (721.0/532.0)
+|   |   |   |   |   |   |   |   |   |   |   |   categories (Wargame) = T: (5) (871.0/423.0) 48,6%
+|   |   |   |   |   |   |   |   |   |   |   categories (Miniatures) = T: (4) (757.0/515.0)
+|   |   |   |   |   |   |   |   |   |   mechanics (Variable Player Powers) = T: (5) (904.0/450.0) 49,8%
+|   |   |   |   |   |   |   mechanics (Modular Board) = T: (5) (939.0/426.0) 45,4%
+|   |   |   |   |   |   mechanics (Roll / Spin and Move) = T                                                                    -----/
+|   |   |   |   |   |   |   categories (Negotiation) = T: (1) (703.0/531.0)
+|   |   |   |   |   |   |   categories (Negotiation) = F
+|   |   |   |   |   |   |   |   playingtime <= 42: (4) (809.0/604.0)
+|   |   |   |   |   |   |   |   playingtime > 42: (5) (1130.0/860.0) 76,1%
+|   |   |   |   |   categories (Trivia) = T
+|   |   |   |   |   |   max_players <= 5: (1) (579.0/411.0)
+|   |   |   |   |   |   max_players > 5: (4) (882.0/680.0)
+|   |   |   |   categories (Educational) = T: (1) (1216.0/910.0)
+|   |   |   categories (Print & Play) = T: (3) (1493.0/1005.0)
+|   mechanics (Hex-and-Counter) = T
+|   |   playingtime <= 42: (4) (664.0/440.0)
+|   |   playingtime > 42: (5) (2549.0/1052.0) 41,3% <------
+
+Number of Leaves  : 	37
+
+Size of the tree : 	73
+
+
+Time taken to build model: 8.49 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances       17317               33.7064 %
+Incorrectly Classified Instances     34059               66.2936 %
+Kappa statistic                          0.1713
+Mean absolute error                      0.2976
+Root mean squared error                  0.386 
+Relative absolute error                 92.9966 %
+Root relative squared error             96.5038 %
+Total Number of Instances            51376     
+Ignored Class Unknown Instances              10828     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.618     0.188      0.451     0.618     0.522      0.811    (5)
+                 0.284     0.209      0.254     0.284     0.268      0.623    (4)
+                 0.19      0.127      0.272     0.19      0.224      0.587    (3)
+                 0.417     0.198      0.344     0.417     0.377      0.635    (1)
+                 0.176     0.106      0.293     0.176     0.22       0.609    (2)
+Weighted Avg.    0.337     0.166      0.323     0.337     0.322      0.653
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+ 6352 2404  655  578  286 |    a = (5)
+ 3125 2920 1617 1615  998 |    b = (4)
+ 1833 2481 1957 2459 1545 |    c = (3)
+ 1404 1742 1312 4280 1538 |    d = (1)
+ 1361 1956 1655 3495 1808 |    e = (2)
+

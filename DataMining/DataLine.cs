@@ -150,8 +150,8 @@ namespace DataMiningIndividual
             //result.hashDoubles[names[16]] = ParseDouble(data[16]);          //num_players_rec
             //result.hashDoubles[names[17]] = ParseDouble(data[17]);          //num_players_notrec
             //result.hashDoubles[names[18]] = Double.Parse(data[18]);         //suggested_age
-            result.hashStringArrays[names[19]] = ParseStringArray(data[19]);//, CATEGORY); //categories
-            result.hashStringArrays[names[20]] = ParseStringArray(data[20]);//, MECHANIC); //mechanics
+            result.hashStringArrays[names[19]] = ParseStringArray(data[19], CATEGORY).Select(c => IDtoLabel(c)).ToArray(); //categories
+            result.hashStringArrays[names[20]] = ParseStringArray(data[20], MECHANIC).Select(c => IDtoLabel(c)).ToArray(); //mechanics
             //result.hashStringArrays[names[21]] = ParseStringArray(data[21]);//, BOARDGAMEFAMILY); //boardgamefamilies
             //result.hashStringArrays[names[22]] = ParseStringArray(data[22]); //implementation_of
             //result.hashStringArrays[names[23]] = ParseStringArray(data[23]);//, DESIGNER); //designers

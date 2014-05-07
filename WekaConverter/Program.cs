@@ -12,6 +12,8 @@ namespace WekaConverter
     {
         static void Main(string[] args)
         {
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+
             String file = args.Length > 0 ? args[0] : "data_w_right_ratings2014-05-02.csv";
             String outputfile = file.Split('.')[0] + "-weka.csv";
 
@@ -51,10 +53,12 @@ namespace WekaConverter
         private static void DiscretizeValues(List<DataLine> data)
         {
             EqualDepthBin(data, "average_rating", 5);
+            EqualDepthBin(data, "rating_stddev", 5);
             EqualDepthBin(data, "year_published", 10);
             EqualDepthBin(data, "min_players", 3);
             EqualDepthBin(data, "max_players", 5);
             EqualDepthBin(data, "playingtime", 7);
+            EqualDepthBin(data, "num_owned", 5);
         }
 
         private static void EqualDepthBin(List<DataLine> data, string doubleLabel, int bins)
@@ -95,10 +99,10 @@ namespace WekaConverter
 
             // top line
             StringBuilder builder = new StringBuilder();
-            wekaData[0].hashStrings.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashDates.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashDoubles.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashBooleans.Keys.ForEach(k => builder.Append(k + separator));
+            wekaData[0].hashStrings.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashDates.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashBooleans.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
             builder.Length--;
             writer.WriteLine(builder.ToString());
 
@@ -152,7 +156,7 @@ namespace WekaConverter
                 {
                     foreach (string value in kv.Value)
                     {
-                        newDataLine.hashBooleans[kv.Key + " " + value] = oldDataLine.hashStringArrays[kv.Key].Contains(value);
+                        newDataLine.hashBooleans[kv.Key + " (" + value.Replace(',',':') + ")"] = oldDataLine.hashStringArrays[kv.Key].Contains(value);
                     }
                 }
 
