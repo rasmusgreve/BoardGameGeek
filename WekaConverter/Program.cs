@@ -24,6 +24,9 @@ namespace WekaConverter
             Console.WriteLine("* Discretize numeric values");
             DiscretizeValues(data);
 
+            Console.WriteLine("* Adding extra parameters");
+            AddSpielNominee(data);
+
             Console.WriteLine("* Expanding arrays to boolean parameters...");
             List<DataLine> wekaData = DivideLists(data);
 
@@ -33,6 +36,16 @@ namespace WekaConverter
             Console.WriteLine();
             Console.WriteLine("DONE");
             Console.ReadLine();
+        }
+
+        private static void AddSpielNominee(List<DataLine> data)
+        {
+            List<DataLine> nominees = DataLine.ParseInferred(CSVParser.ReadDataFile("spiel_des_jahres.csv", ";", null));
+
+            foreach(DataLine game in data){
+                bool isNom = nominees.Any(n => n.hashDoubles["game_id"].Equals(game.hashDoubles["id"]));
+                game.hashBooleans["spiel_nominee"] = isNom;
+            }
         }
 
         private static void DiscretizeValues(List<DataLine> data)
