@@ -37,13 +37,41 @@ namespace WekaConverter
 
         private static void DiscretizeValues(List<DataLine> data)
         {
-            string label = "average_rating";
+            EqualDepthBin(data, "average_rating", 5);
+            EqualDepthBin(data, "year_published", 10);
+            EqualDepthBin(data, "min_players", 3);
+            EqualDepthBin(data, "max_players", 5);
+            EqualDepthBin(data, "playingtime", 7);
+        }
 
-            foreach (DataLine d in data)
+        private static void EqualDepthBin(List<DataLine> data, string doubleLabel, int bins)
+        {
+            Console.WriteLine("\tBinning \"{0}\":",doubleLabel);
+
+            var missing = data.Where(g => g.hashDoubles[doubleLabel] == 0.0);
+            DataLine[] sorted = data.Where(g => g.hashDoubles[doubleLabel] != 0.0).OrderBy(g => g.hashDoubles[doubleLabel]).ToArray();
+
+            // binning of games with real values
+            int printedBin = 0;
+            for (int i = 0; i < sorted.Length; i++)
             {
-                double rating = (double)d.hashDoubles[label];
-                d.hashDoubles.Remove(label);
-                d.hashStrings["disc("+label+")"] = "disc "+Math.Round(rating).ToString();
+                int bin = 1 + (int)(i / (sorted.Length / (double)bins)); // 1 - bins
+
+                if (printedBin < bin)
+                {
+                    if (printedBin > 0) Console.WriteLine(" to {0}", sorted[i - 1].hashDoubles[doubleLabel].ToString());
+                    printedBin++;
+                    Console.Write("\t\tBin {0}: {1}",bin,sorted[i].hashDoubles[doubleLabel].ToString());
+                }
+
+                sorted[i].hashStrings["eqdep(" + doubleLabel + ")"] = "("+bin+")";
+            }
+            Console.WriteLine(" to {0}", sorted[sorted.Length-1].hashDoubles[doubleLabel].ToString());
+
+            // missing values
+            foreach (DataLine d in missing)
+            {
+                d.hashStrings["eqdep(" + doubleLabel + ")"] = "?";
             }
         }
 
