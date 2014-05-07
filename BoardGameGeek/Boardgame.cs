@@ -21,8 +21,8 @@ namespace BoardGameGeek
 
         public static void Main()
         {
-            FetchGames(CSVForID,"id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
-            //FetchGames(CSVForIDHistorical, "id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;historicalJun;historicalJul;historicalAug;historicalSep;hostoricalOct;");
+            //FetchGames(CSVForID,"id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;");
+            FetchGames(CSVForIDHistorical, "id;name;year_published;min_players;max_players;playingtime;min_age;users_rated;average_rating;rating_stddev;num_owned;num_trading;num_wanting;num_wishing;num_comments;num_players_best;num_players_rec;num_players_notrec;suggested_age;categories;mechanics;boardgamefamilies;implementation_of;designers;artists;publishers;historicalJun;historicalJul;historicalAug;historicalSep;hostoricalOct;");
         }
 
         public static void FetchGames(Func<int,string> idToCSVMethod, string header)

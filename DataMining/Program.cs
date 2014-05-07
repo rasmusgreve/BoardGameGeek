@@ -12,15 +12,17 @@ namespace DataMining
 {
     class Program
     {
+
         /// <summary>
         /// The main method for running the analysis on the two datasets.
         /// </summary>
         /// <param name="args">Not used</param>
         static void Main(string[] args)
         {
-            PerformDM(args.Length > 0 ? args[0] : "data2014-04-03_03-35-14.csv");
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null)).ToList();
+            DataMining.BackPropagation(historical);
 
-            DataMining.FrequentPatternAnalysis();
+            //DataMining.FrequentPatternAnalysis();
             Console.ReadLine();
         }
 
@@ -37,7 +39,21 @@ namespace DataMining
         /// saved under the same name with "-output.txt" at the end.</param>
         private static void PerformDM(string file)
         {
-            List<DataLine> historical = ReadData(file);
+            Console.WriteLine("Parsing started.");
+
+            string[][] data = CSVParser.ReadDataFile(file, ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+            answers = answers.Take(20000).ToList();
+
+            List<DataLine> historical = DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null)).ToList();
+            Console.WriteLine("Historical Loaded");
+
+            Console.WriteLine("Parsing Complete.\n");
 
             // create output after successful parsing
             TextWriter output = Console.Out;
@@ -71,33 +87,6 @@ namespace DataMining
                 Print(output,clusters[c] + "\n");
             }
             */
+            }
         }
-        /// <summary>
-        /// Loads the data from the .csv file
-        /// </summary>
-        /// <param name="file">Path to the csv file to be loaded</param>
-        /// <returns>A list of DataLines objects, which represent</returns>
-
-        private static List<DataLine> ReadData(string file)
-        {
-            Console.WriteLine("Parsing started.");
-
-            string[][] data = CSVParser.ReadDataFile(file, ";", null);
-            Console.WriteLine("Read datalines");
-
-            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
-            Console.WriteLine("Read link file");
-
-            List<DataLine> answers = DataLine.ParseFixed(data);
-            answers = answers.Take(20000).ToList();
-
-            List<DataLine> historical =
-                DataLine.ParseHistorical(CSVParser.ReadDataFile("data2014-04-09_09-11-52-historical.csv", ";", null))
-                    .Take(5000).ToList();
-            Console.WriteLine("Historical Loaded");
-
-            Console.WriteLine("Parsing Complete.\n");
-            return historical;
-        }
-    }
 }

@@ -6,7 +6,7 @@ namespace DataMining.Neural_Networks
 {
     public class Node
     {
-        public const double LearningRate = 1.0;
+        public const double LearningRate = 0.9;
 
         public List<Connection> InCon, OutCon;
 
@@ -31,20 +31,25 @@ namespace DataMining.Neural_Networks
 
         public double ForwardOperation()
         {
-            if (!InCon.Any())
+            if (InCon.Count == 0) // input node
             {
                 OutputValue = InputValue;
                 return InputValue;
             }
 
+            //Console.WriteLine("Forward Op: " + this.GetHashCode());
+
             double S = Bias; //+ InCon.Sum(conn => conn.From.ForwardOperation()*conn.Weight);
-            foreach (Connection conn in InCon)
+            foreach (Connection c in InCon)
             {
-                S += conn.From.ForwardOperation()*conn.Weight;
+                double value = c.From.ForwardOperation() * c.Weight;
+                //Console.WriteLine("\t From: " + conn.From.GetHashCode() + " = "+value);
+                S += value;
             }
 
             double A = 1.0/(1.0 + Math.Pow(Math.E, -1.0 * S));
             OutputValue = A;
+            //Console.WriteLine("\t A = " + A);
             return A;
         }
 
@@ -52,20 +57,20 @@ namespace DataMining.Neural_Networks
         {
             double O = OutputValue;
 
-            if (!OutCon.Any())
+            if (OutCon.Count == 0) // output value
             {
-                ErrorValue = O*(1 - O)*(T - O);
+                ErrorValue = O*(1.0 - O) * (T - O);
                 return;
             }
 
             //layer mode
-            double nextSum = OutCon.Sum(conn => conn.To.ErrorValue*conn.Weight);
-            ErrorValue = O*(1 - O)*nextSum;
+            double nextSum = OutCon.Sum(c => c.To.ErrorValue * c.Weight);
+            ErrorValue = O * (1.0 - O) * nextSum;
         }
 
         public void UpdateBias()
         {
-            Bias = Bias + (LearningRate*ErrorValue);
+            Bias = Bias + (Node.LearningRate*ErrorValue);
         }
     }
 }
