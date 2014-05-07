@@ -202,11 +202,7 @@ namespace DataMiningIndividual
 			    foreach(String s in split){
 				    double? cur = ParseDouble(s);
 				    if(cur != null){
-					    if(result == null){
-						    result = cur;
-					    }else{
-						    return null; // ambiguity
-					    }
+					    result = cur;
 				    }
 				    return cur; // worst case, same as before
 			    }
