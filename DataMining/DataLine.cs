@@ -162,24 +162,21 @@ namespace DataMiningIndividual
             return result;
 	    }
 
-        public static Dictionary<string, Dictionary<int, string>> linkDictionary;
+        public static Dictionary<string, Dictionary<int, string>> linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
 
         public static string IDtoLabel(string idString)
         {
-            try
-            {
-                int id = int.Parse(idString);
-                if (id < MECHANIC) return linkDictionary["categories"][id - CATEGORY];
-                if (id < BOARDGAMEFAMILY) return linkDictionary["mechanics"][id - MECHANIC];
-                if (id < DESIGNER) return linkDictionary["families"][id - BOARDGAMEFAMILY];
-                if (id < ARTIST) return linkDictionary["designers"][id - DESIGNER];
-                if (id < PUBLISHER) return linkDictionary["artists"][id - ARTIST];
-                return linkDictionary["publishers"][id - PUBLISHER];
-            }
-            catch (Exception)
-            {
-                return idString;
-            }
+            int id = -1;
+            int.TryParse(idString, out id);
+
+            if (id == -1) return idString;
+
+            if (id < MECHANIC) return linkDictionary["categories"][id - CATEGORY];
+            if (id < BOARDGAMEFAMILY) return linkDictionary["mechanics"][id - MECHANIC];
+            if (id < DESIGNER) return linkDictionary["families"][id - BOARDGAMEFAMILY];
+            if (id < ARTIST) return linkDictionary["designers"][id - DESIGNER];
+            if (id < PUBLISHER) return linkDictionary["artists"][id - ARTIST];
+            return linkDictionary["publishers"][id - PUBLISHER];
         }
 
         /// <summary>
@@ -384,7 +381,7 @@ namespace DataMiningIndividual
 
         private static string[] ParseStringArray(string input, int numberToAddToValue)
         {
-            if (input == null) return null;
+            if (input == null) return new string[0];
 
             string[] output = ParseStringArray(input);
             for (int i = 0; i < output.Length;i++)
@@ -401,7 +398,7 @@ namespace DataMiningIndividual
         }
 
 	    private static string[] ParseStringArray(string input) {
-            if (input == null) return null;
+            if (input == null) return new string[0];
 
 		    string[] output;
 		    if(input.Contains(",")){

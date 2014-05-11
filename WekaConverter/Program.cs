@@ -12,7 +12,7 @@ namespace WekaConverter
     {
         static void Main(string[] args)
         {
-            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            //DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
 
             String file = args.Length > 0 ? args[0] : "data_w_right_ratings2014-05-02.csv";
             String outputfile = file.Split('.')[0] + "-weka.csv";

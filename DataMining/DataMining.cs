@@ -351,9 +351,9 @@ namespace DataMining
             Console.WriteLine(years[0][0]);
 
             // Training of NN
-            var trainingset = years[0];// years[0].Union(years[1]).Union(years[2]).Union(years[3]).Union(years[4]).Union(years[5]);
+            var trainingset = years[1].Union(years[2]).Union(years[3]).Union(years[4]).Union(years[5]);
 
-            NeuralNetwork nn = new NeuralNetwork(30, 1, 2, 2);
+            NeuralNetwork nn = new NeuralNetwork(30, 1, 5, 1);
             DataLine[] years0 = CreateOversampling(trainingset.ToArray(), spiel).ToList().Shuffle(1337).ToArray();
             double[] year0nominees = years0.Select(g => IsGameNominee(g,spiel) ? 1.0 : 0.0).ToArray();
             Console.WriteLine(string.Join(",", year0nominees));
@@ -364,7 +364,7 @@ namespace DataMining
             int false_positive = 0;
             int true_negative = 0;
             int false_negative = 0;
-            foreach (DataLine g in years[1])
+            foreach (DataLine g in years[0])
             {
                 double[] input = PrepareInput(g);
                 bool result = nn.CalculateOutput(input)[0] > 0.5;
@@ -655,7 +655,7 @@ namespace DataMining
         #region --------- Backpropagation Helper Methods ----------
 
         private static void TrainNetwork(NeuralNetwork nn, DataLine[] data, double[] nominee){
-            int ITERATIONS = 1000;
+            int ITERATIONS = 10000;
 
             double[][] trainingInput = PrepareInput(data);
             double[][] trainingOutput = PrepareOutput(nominee);
@@ -711,11 +711,11 @@ namespace DataMining
 
         private static DataLine[][] NormalizeHistorical(List<DataLine> data)
         {
-            DataLine[][] groups = data.GroupBy(bg => bg.hashStrings["year_published"]).Select(g => g.ToArray()).ToArray();
+            DataLine[][] groups = data.GroupBy(bg => bg.hashDoubles["year_published"]).Select(g => g.ToArray()).ToArray();
 
             foreach (DataLine[] year in groups)
             {
-                Console.WriteLine("Normalizing year " + year[0].hashStrings["year_published"]);
+                Console.WriteLine("Normalizing year " + year[0].hashDoubles["year_published"]);
                 for(int i = 0; i < 6; i++) // each value in the historical data
                 {
                     IEnumerable<double> values = year[0].hashDoubleArrays.Keys.SelectMany(k => year.Select(g => g.hashDoubleArrays[k][i]));
