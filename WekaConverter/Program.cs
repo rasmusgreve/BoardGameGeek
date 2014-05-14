@@ -65,8 +65,10 @@ namespace WekaConverter
         {
             Console.WriteLine("\tBinning \"{0}\":",doubleLabel);
 
-            var missing = data.Where(g => g.hashDoubles[doubleLabel] == 0.0);
-            DataLine[] sorted = data.Where(g => g.hashDoubles[doubleLabel] != 0.0).OrderBy(g => g.hashDoubles[doubleLabel]).ToArray();
+            bool missingValues = ZeroIsMissing(doubleLabel);
+
+            DataLine[] missing = missingValues ? data.Where(g => g.hashDoubles[doubleLabel] == 0.0).ToArray() : new DataLine[0];
+            DataLine[] sorted = data.Where(g => !missingValues || g.hashDoubles[doubleLabel] != 0.0).OrderBy(g => g.hashDoubles[doubleLabel]).ToArray();
 
             // binning of games with real values
             int printedBin = 0;
@@ -123,10 +125,14 @@ namespace WekaConverter
             writer.Close();
         }
 
+        private static bool ZeroIsMissing(string key)
+        {
+            return new string[] { "year_published", "min_players", "max_players", "playingtime", "min_age", "average_rating" }.Any(k => k.Equals(key));
+        }
+
         private static string DoubleToString(double value, string key)
         {
-            string[] matchKeys = new string[]{"year_published","min_players","max_players","playingtime","min_age","average_rating"};
-            if(value == 0.0) return "?";
+            if(ZeroIsMissing(key) && value == 0.0) return "?";
             return value.ToString(System.Globalization.NumberFormatInfo.InvariantInfo);
         }
 
