@@ -169,7 +169,7 @@ namespace DataMiningIndividual
             int id = -1;
             int.TryParse(idString, out id);
 
-            if (id == -1) return idString;
+            if (id <= 0) return idString;
 
             if (id < MECHANIC) return linkDictionary["categories"][id - CATEGORY];
             if (id < BOARDGAMEFAMILY) return linkDictionary["mechanics"][id - MECHANIC];

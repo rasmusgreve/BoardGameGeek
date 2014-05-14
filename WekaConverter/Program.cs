@@ -112,7 +112,7 @@ namespace WekaConverter
                 builder = new StringBuilder();
                 d.hashStrings.Keys.ForEach(k => builder.Append("\"" + (d.hashStrings[k] == null ? "null" : d.hashStrings[k].Replace(separator, '-').Replace('"', '-').Replace('\'', '-')) + "\"" + separator));
                 d.hashDates.Keys.ForEach(k => builder.Append(d.hashDates[k].ToString() + separator));
-                d.hashDoubles.Keys.ForEach(k => builder.Append(((double)d.hashDoubles[k]).ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + separator));
+                d.hashDoubles.Keys.ForEach(k => builder.Append(DoubleToString((double)d.hashDoubles[k],k) + separator));
                 d.hashBooleans.Keys.ForEach((k, i) => builder.Append(((bool)d.hashBooleans[k] ? "\"T\"" : "\"F\"") + separator));
 
                 builder.Length--;
@@ -121,6 +121,13 @@ namespace WekaConverter
             }
             writer.Flush();
             writer.Close();
+        }
+
+        private static string DoubleToString(double value, string key)
+        {
+            string[] matchKeys = new string[]{"year_published","min_players","max_players","playingtime","min_age","average_rating"};
+            if(value == 0.0) return "?";
+            return value.ToString(System.Globalization.NumberFormatInfo.InvariantInfo);
         }
 
         private static List<DataLine> DivideLists(List<DataLine> data)
