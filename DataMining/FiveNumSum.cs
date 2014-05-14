@@ -40,11 +40,16 @@ namespace BoardGameGeek
 
         public override string ToString()
         {
-            return "Min: "+Min+
-                   ", Q1: "+TwentyFive+
-                   ", Q2: "+Median+
-                   ", Q3: "+SeventyFive+
-                   ", Max: "+Max;
+            return Min +
+                   "\t& " + TwentyFive +
+                   "\t& " + Median +
+                   "\t& " + SeventyFive +
+                   "\t& " + Max;
+            /*return "Min: "+Min+
+                   ",\tQ1: "+TwentyFive+
+                   ",\tQ2: "+Median+
+                   ",\tQ3: "+SeventyFive+
+                   ",\tMax: "+Max;*/
         }
     }
 }

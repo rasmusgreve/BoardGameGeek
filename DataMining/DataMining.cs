@@ -130,11 +130,102 @@ namespace DataMining
             return clusters.ToList();
         }
 
-        public static Tuple<FiveNumSum<double>, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMaxThreshold)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"Collection of data on which to calculate boxplot></param>
+        /// <param name="label">The label of the parameter to calculate boxplot on</param>
+        /// <param name="outliersMinThreshold">A minimum threshold (inclusive) - all values less than this will be discarded.</param>
+        /// <param name="outliersMaxThreshold">A maximum threshold (also inclusive(!)) - all values greater than this will be discarded.</param>
+        /// <returns>A tuple of; 1) The five boxplot numbers in an object, 2) number of elements less than min that were discarded, 3) number of elements greater than max that were discarded</returns>
+        public static Tuple<FiveNumSum<double>, int, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMinThreshold, int outliersMaxThreshold)
         {
-            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
-            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMaxThreshold);
-            return new Tuple<FiveNumSum<double>, int>(first, second);
+            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMinThreshold && line.hashDoubles[label] < outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
+            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMinThreshold);
+            int third = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] >= outliersMaxThreshold);
+            return new Tuple<FiveNumSum<double>, int, int>(first, second, third);
+        }
+
+        public static void BoxplotMe()
+        {
+            string[][] data = CSVParser.ReadDataFile("data_w_right_ratings2014-05-02.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+
+            string label = "min_age";
+            var tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 100);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "playingtime";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 1000);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "min_players";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 20);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "max_players";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 100);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "year_published";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1900, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "average_rating";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 0, 20);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+        }
+
+        public static void MissingValues()
+        {
+            string[][] data = CSVParser.ReadDataFile("data_w_right_ratings2014-05-02.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+
+            foreach (string label in answers[0].hashDoubles.Keys)
+            {
+                int c = answers.Count(line => line.hashDoubles[label] == 0);
+                double p = Math.Round(c/(double)answers.Count*100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p +"% \\\\ \\hline");
+            }
+
+            foreach (string label in answers[0].hashStringArrays.Keys)
+            {
+                int c = answers.Count(line => line.hashStringArrays[label] == null || line.hashStringArrays[label].Length == 0);
+                double p = Math.Round(c / (double)answers.Count * 100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p + "% \\\\ \\hline");
+            }
+
+            foreach (string label in answers[0].hashStrings.Keys)
+            {
+                int c = answers.Count(line => line.hashStrings[label] == null || line.hashStrings[label].Length == 0);
+                double p = Math.Round(c / (double)answers.Count * 100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p + "% \\\\ \\hline");
+            }
+
+
         }
 
         public static void FrequentPatternAnalysis()
@@ -186,20 +277,6 @@ namespace DataMining
             {
                 Console.WriteLine("\t" + d);
             }*/
-
-            string label = "min_players";
-            var tup = BoxPlot(answers, label, 20);
-            Console.WriteLine(label+"("+tup.Item2+" removed): "+tup.Item1);
-
-            label = "max_players";
-            tup = BoxPlot(answers, label, 100);
-            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
-
-            label = "year_published";
-            tup = BoxPlot(answers, label, int.MaxValue);
-            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
-
-            Console.ReadLine();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // Apriori
