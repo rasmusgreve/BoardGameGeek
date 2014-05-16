@@ -6,7 +6,7 @@ namespace DataMining.Neural_Networks
 {
     public class Node
     {
-        public const double LearningRate = 0.9;
+        public const double LearningRate = 0.5;
 
         public List<Connection> InCon, OutCon;
 

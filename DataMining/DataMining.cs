@@ -130,11 +130,102 @@ namespace DataMining
             return clusters.ToList();
         }
 
-        public static Tuple<FiveNumSum<double>, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMaxThreshold)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"Collection of data on which to calculate boxplot></param>
+        /// <param name="label">The label of the parameter to calculate boxplot on</param>
+        /// <param name="outliersMinThreshold">A minimum threshold (inclusive) - all values less than this will be discarded.</param>
+        /// <param name="outliersMaxThreshold">A maximum threshold (also inclusive(!)) - all values greater than this will be discarded.</param>
+        /// <returns>A tuple of; 1) The five boxplot numbers in an object, 2) number of elements less than min that were discarded, 3) number of elements greater than max that were discarded</returns>
+        public static Tuple<FiveNumSum<double>, int, int> BoxPlot(ICollection<DataLine> data, string label, int outliersMinThreshold, int outliersMaxThreshold)
         {
-            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
-            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMaxThreshold);
-            return new Tuple<FiveNumSum<double>, int>(first, second);
+            var first = FiveNumSum<double>.GetFiveNumSum(data.Where(line => line.hashDoubles[label] != null && line.hashDoubles[label] > outliersMinThreshold && line.hashDoubles[label] < outliersMaxThreshold).Select(line => (double)line.hashDoubles[label]).ToArray());
+            int second = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] <= outliersMinThreshold);
+            int third = data.Count(line => line.hashDoubles[label] != null && line.hashDoubles[label] >= outliersMaxThreshold);
+            return new Tuple<FiveNumSum<double>, int, int>(first, second, third);
+        }
+
+        public static void BoxplotMe()
+        {
+            string[][] data = CSVParser.ReadDataFile("data_w_right_ratings2014-05-02.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+
+            string label = "min_age";
+            var tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 100);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "playingtime";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 1000);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "min_players";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 20);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "max_players";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1, 100);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "year_published";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 1900, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+            label = "average_rating";
+            tup = BoxPlot(answers, label, int.MinValue, int.MaxValue);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+            tup = BoxPlot(answers, label, 0, 20);
+            Console.WriteLine();Console.WriteLine(label + " \\newline\n(" + tup.Item2 + " and " + tup.Item3 + " removed)\t\t\t& " + tup.Item1 + " \\\\ \\hline");
+
+        }
+
+        public static void MissingValues()
+        {
+            string[][] data = CSVParser.ReadDataFile("data_w_right_ratings2014-05-02.csv", ";", null);
+            Console.WriteLine("Read datalines");
+
+            DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+            Console.WriteLine("Read link file");
+
+            List<DataLine> answers = DataLine.ParseFixed(data);
+
+            foreach (string label in answers[0].hashDoubles.Keys)
+            {
+                int c = answers.Count(line => line.hashDoubles[label] == 0);
+                double p = Math.Round(c/(double)answers.Count*100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p +"% \\\\ \\hline");
+            }
+
+            foreach (string label in answers[0].hashStringArrays.Keys)
+            {
+                int c = answers.Count(line => line.hashStringArrays[label] == null || line.hashStringArrays[label].Length == 0);
+                double p = Math.Round(c / (double)answers.Count * 100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p + "% \\\\ \\hline");
+            }
+
+            foreach (string label in answers[0].hashStrings.Keys)
+            {
+                int c = answers.Count(line => line.hashStrings[label] == null || line.hashStrings[label].Length == 0);
+                double p = Math.Round(c / (double)answers.Count * 100.0, 2);
+                Console.WriteLine(); Console.WriteLine(label + "\t& " + c + "\t& " + p + "% \\\\ \\hline");
+            }
+
+
         }
 
         public static void FrequentPatternAnalysis()
@@ -186,20 +277,6 @@ namespace DataMining
             {
                 Console.WriteLine("\t" + d);
             }*/
-
-            string label = "min_players";
-            var tup = BoxPlot(answers, label, 20);
-            Console.WriteLine(label+"("+tup.Item2+" removed): "+tup.Item1);
-
-            label = "max_players";
-            tup = BoxPlot(answers, label, 100);
-            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
-
-            label = "year_published";
-            tup = BoxPlot(answers, label, int.MaxValue);
-            Console.WriteLine(label + "(" + tup.Item2 + " removed): " + tup.Item1);
-
-            Console.ReadLine();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             // Apriori
@@ -351,9 +428,9 @@ namespace DataMining
             Console.WriteLine(years[0][0]);
 
             // Training of NN
-            var trainingset = years[0];// years[0].Union(years[1]).Union(years[2]).Union(years[3]).Union(years[4]).Union(years[5]);
+            var trainingset = years[1].Union(years[2]).Union(years[3]).Union(years[4]).Union(years[5]);
 
-            NeuralNetwork nn = new NeuralNetwork(30, 1, 2, 2);
+            NeuralNetwork nn = new NeuralNetwork(30, 1, 5, 1);
             DataLine[] years0 = CreateOversampling(trainingset.ToArray(), spiel).ToList().Shuffle(1337).ToArray();
             double[] year0nominees = years0.Select(g => IsGameNominee(g,spiel) ? 1.0 : 0.0).ToArray();
             Console.WriteLine(string.Join(",", year0nominees));
@@ -364,7 +441,7 @@ namespace DataMining
             int false_positive = 0;
             int true_negative = 0;
             int false_negative = 0;
-            foreach (DataLine g in years[1])
+            foreach (DataLine g in years[0])
             {
                 double[] input = PrepareInput(g);
                 bool result = nn.CalculateOutput(input)[0] > 0.5;
@@ -655,7 +732,7 @@ namespace DataMining
         #region --------- Backpropagation Helper Methods ----------
 
         private static void TrainNetwork(NeuralNetwork nn, DataLine[] data, double[] nominee){
-            int ITERATIONS = 1000;
+            int ITERATIONS = 10000;
 
             double[][] trainingInput = PrepareInput(data);
             double[][] trainingOutput = PrepareOutput(nominee);
@@ -711,11 +788,11 @@ namespace DataMining
 
         private static DataLine[][] NormalizeHistorical(List<DataLine> data)
         {
-            DataLine[][] groups = data.GroupBy(bg => bg.hashStrings["year_published"]).Select(g => g.ToArray()).ToArray();
+            DataLine[][] groups = data.GroupBy(bg => bg.hashDoubles["year_published"]).Select(g => g.ToArray()).ToArray();
 
             foreach (DataLine[] year in groups)
             {
-                Console.WriteLine("Normalizing year " + year[0].hashStrings["year_published"]);
+                Console.WriteLine("Normalizing year " + year[0].hashDoubles["year_published"]);
                 for(int i = 0; i < 6; i++) // each value in the historical data
                 {
                     IEnumerable<double> values = year[0].hashDoubleArrays.Keys.SelectMany(k => year.Select(g => g.hashDoubleArrays[k][i]));

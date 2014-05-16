@@ -12,6 +12,8 @@ namespace WekaConverter
     {
         static void Main(string[] args)
         {
+            //DataLine.linkDictionary = CSVParser.ReadLinkFile("linkIdNames.txt");
+
             String file = args.Length > 0 ? args[0] : "data_w_right_ratings2014-05-02.csv";
             String outputfile = file.Split('.')[0] + "-weka.csv";
 
@@ -51,18 +53,22 @@ namespace WekaConverter
         private static void DiscretizeValues(List<DataLine> data)
         {
             EqualDepthBin(data, "average_rating", 5);
+            EqualDepthBin(data, "rating_stddev", 5);
             EqualDepthBin(data, "year_published", 10);
             EqualDepthBin(data, "min_players", 3);
             EqualDepthBin(data, "max_players", 5);
             EqualDepthBin(data, "playingtime", 7);
+            EqualDepthBin(data, "num_owned", 5);
         }
 
         private static void EqualDepthBin(List<DataLine> data, string doubleLabel, int bins)
         {
             Console.WriteLine("\tBinning \"{0}\":",doubleLabel);
 
-            var missing = data.Where(g => g.hashDoubles[doubleLabel] == 0.0);
-            DataLine[] sorted = data.Where(g => g.hashDoubles[doubleLabel] != 0.0).OrderBy(g => g.hashDoubles[doubleLabel]).ToArray();
+            bool missingValues = ZeroIsMissing(doubleLabel);
+
+            DataLine[] missing = missingValues ? data.Where(g => g.hashDoubles[doubleLabel] == 0.0).ToArray() : new DataLine[0];
+            DataLine[] sorted = data.Where(g => !missingValues || g.hashDoubles[doubleLabel] != 0.0).OrderBy(g => g.hashDoubles[doubleLabel]).ToArray();
 
             // binning of games with real values
             int printedBin = 0;
@@ -95,10 +101,10 @@ namespace WekaConverter
 
             // top line
             StringBuilder builder = new StringBuilder();
-            wekaData[0].hashStrings.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashDates.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashDoubles.Keys.ForEach(k => builder.Append(k + separator));
-            wekaData[0].hashBooleans.Keys.ForEach(k => builder.Append(k + separator));
+            wekaData[0].hashStrings.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashDates.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashDoubles.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
+            wekaData[0].hashBooleans.Keys.ForEach(k => builder.Append("\"" + k + "\"" + separator));
             builder.Length--;
             writer.WriteLine(builder.ToString());
 
@@ -108,7 +114,7 @@ namespace WekaConverter
                 builder = new StringBuilder();
                 d.hashStrings.Keys.ForEach(k => builder.Append("\"" + (d.hashStrings[k] == null ? "null" : d.hashStrings[k].Replace(separator, '-').Replace('"', '-').Replace('\'', '-')) + "\"" + separator));
                 d.hashDates.Keys.ForEach(k => builder.Append(d.hashDates[k].ToString() + separator));
-                d.hashDoubles.Keys.ForEach(k => builder.Append(((double)d.hashDoubles[k]).ToString(System.Globalization.NumberFormatInfo.InvariantInfo) + separator));
+                d.hashDoubles.Keys.ForEach(k => builder.Append(DoubleToString((double)d.hashDoubles[k],k) + separator));
                 d.hashBooleans.Keys.ForEach((k, i) => builder.Append(((bool)d.hashBooleans[k] ? "\"T\"" : "\"F\"") + separator));
 
                 builder.Length--;
@@ -117,6 +123,17 @@ namespace WekaConverter
             }
             writer.Flush();
             writer.Close();
+        }
+
+        private static bool ZeroIsMissing(string key)
+        {
+            return new string[] { "year_published", "min_players", "max_players", "playingtime", "min_age", "average_rating" }.Any(k => k.Equals(key));
+        }
+
+        private static string DoubleToString(double value, string key)
+        {
+            if(ZeroIsMissing(key) && value == 0.0) return "?";
+            return value.ToString(System.Globalization.NumberFormatInfo.InvariantInfo);
         }
 
         private static List<DataLine> DivideLists(List<DataLine> data)
@@ -152,7 +169,7 @@ namespace WekaConverter
                 {
                     foreach (string value in kv.Value)
                     {
-                        newDataLine.hashBooleans[kv.Key + " " + value] = oldDataLine.hashStringArrays[kv.Key].Contains(value);
+                        newDataLine.hashBooleans[kv.Key + " (" + value.Replace(',',':') + ")"] = oldDataLine.hashStringArrays[kv.Key].Contains(value);
                     }
                 }
 

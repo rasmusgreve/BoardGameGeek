@@ -1,0 +1,17 @@
+Cluster centroids:
+                                                         Cluster#
+Attribute                                    -ull Data          0          1          2          3          4          5
+                                               (62204)     (7253)     (3951)     (2823)     (5923)     (8818)    (33436)
+========================================================================================================================
+min_players                                     2.0577     1.8446     2.9056     1.9981     1.9731     1.9341     2.0563
+max_players                                     5.8759       4.08    12.0949     6.4269     5.0378     4.9083     5.8878
+playingtime                                    60.3185   147.9102    49.8839    53.2232    35.7127    30.9941    55.2425
+min_age                                         9.0616    11.8141    10.8102     9.3381     8.7755      5.591     9.2006
+categories (Abstract Strategy)                       -          -          -          -          X          -          -
+categories (Wargame)                                 -          X          -          -          -          -          -
+categories (Party Game)                              -          -          X          -          -          -          -
+categories (Trivia)                                  -          -          -          X          -          -          -
+categories (Educational)                             -          -          -          X          -          -          -
+categories (Children's Game)                         -          -          -          -          -          X          -
+mechanics (Dice Rolling)                             -          X          -          -          -          -          -
+mechanics (Roll / Spin and Move)                     -          -          -          X          -          -          -

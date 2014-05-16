@@ -1,0 +1,179 @@
+=== Run information ===
+
+Scheme:weka.clusterers.SimpleKMeans -N 5 -A "weka.core.EuclideanDistance -R first-last" -I 500 -S 10
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R94,134-weka.filters.unsupervised.attribute.Remove-R2-10,17-23-weka.filters.unsupervised.attribute.Remove-R1-weka.filters.unsupervised.attribute.Remove-R5-6
+Instances:    62204
+Attributes:   139
+[list of attributes omitted]
+Test mode:evaluate on training data
+
+=== Model and evaluation on training set ===
+
+
+kMeans
+======
+
+Number of iterations: 5
+Within cluster sum of squared errors: 215891.20512057524
+Missing values globally replaced with mean/mode
+
+Cluster centroids:
+                                                         Cluster#
+Attribute                                    -ull Data          0          1          2          3          4
+                                               (62204)     (7350)     (3988)     (2830)    (39164)     (8872)
+=============================================================================================================
+min_players                                     2.0577     1.8474     2.8957     1.9981     2.0442     1.9334
+max_players                                     5.8759     4.0905     12.141     6.4237     5.7542     4.9016
+playingtime                                    60.3185   147.2752    49.6983    53.3021    52.2267    31.0111
+min_age                                         9.0616    11.8258    10.7879     9.3327     9.1292     5.6112
+categories (Dice)                                    -          -          -          -          -          -
+categories (Economic)                                -          -          -          -          -          -
+categories (Negotiation)                             -          -          -          -          -          -
+categories (Political)                               -          -          -          -          -          -
+categories (Card Game)                               -          -          -          -          -          -
+categories (Fantasy)                                 -          -          -          -          -          -
+categories (Medieval)                                -          -          -          -          -          -
+categories (Ancient)                                 -          -          -          -          -          -
+categories (Civilization)                            -          -          -          -          -          -
+categories (Nautical)                                -          -          -          -          -          -
+categories (Abstract Strategy)                       -          -          -          -          -          -
+categories (Exploration)                             -          -          -          -          -          -
+categories (Travel)                                  -          -          -          -          -          -
+categories (Farming)                                 -          -          -          -          -          -
+categories (Mythology)                               -          -          -          -          -          -
+categories (Bluffing)                                -          -          -          -          -          -
+categories (Science Fiction)                         -          -          -          -          -          -
+categories (Collectible Components)                  -          -          -          -          -          -
+categories (Fighting)                                -          -          -          -          -          -
+categories (Print & Play)                            -          -          -          -          -          -
+categories (Miniatures)                              -          -          -          -          -          -
+categories (Racing)                                  -          -          -          -          -          -
+categories (Adventure)                               -          -          -          -          -          -
+categories (Wargame)                                 -          X          -          -          -          -
+categories (Space Exploration)                       -          -          -          -          -          -
+categories (Renaissance)                             -          -          -          -          -          -
+categories (Humor)                                   -          -          -          -          -          -
+categories (Electronic)                              -          -          -          -          -          -
+categories (American West)                           -          -          -          -          -          -
+categories (Horror)                                  -          -          -          -          -          -
+categories (Novel-based)                             -          -          -          -          -          -
+categories (Deduction)                               -          -          -          -          -          -
+categories (Word Game)                               -          -          -          -          -          -
+categories (Territory Building)                      -          -          -          -          -          -
+categories (Aviation / Flight)                       -          -          -          -          -          -
+categories (Movies / TV / Radio theme)               -          -          -          -          -          -
+categories (Party Game)                              -          -          X          -          -          -
+categories (City Building)                           -          -          -          -          -          -
+categories (Maze)                                    -          -          -          -          -          -
+categories (Puzzle)                                  -          -          -          -          -          -
+categories (Real-time)                               -          -          -          -          -          -
+categories (Trivia)                                  -          -          -          X          -          -
+categories (Industry / Manufacturing)                -          -          -          -          -          -
+categories (World War II)                            -          -          -          -          -          -
+categories (American Civil War)                      -          -          -          -          -          -
+categories (Age of Reason)                           -          -          -          -          -          -
+categories (World War I)                             -          -          -          -          -          -
+categories (Trains)                                  -          -          -          -          -          -
+categories (Animals)                                 -          -          -          -          -          -
+categories (Pirates)                                 -          -          -          -          -          -
+categories (Murder/Mystery)                          -          -          -          -          -          -
+categories (Transportation)                          -          -          -          -          -          -
+categories (Napoleonic)                              -          -          -          -          -          -
+categories (Prehistoric)                             -          -          -          -          -          -
+categories (Action / Dexterity)                      -          -          -          -          -          -
+categories (Sports)                                  -          -          -          -          -          -
+categories (Game System)                             -          -          -          -          -          -
+categories (Spies/Secret Agents)                     -          -          -          -          -          -
+categories (Educational)                             -          -          -          X          -          -
+categories (Medical)                                 -          -          -          -          -          -
+categories (Mafia)                                   -          -          -          -          -          -
+categories (Zombies)                                 -          -          -          -          -          -
+categories (Comic Book / Strip)                      -          -          -          -          -          -
+categories (Children's Game)                         -          -          -          -          -          X
+categories (Civil War)                               -          -          -          -          -          -
+categories (American Indian Wars)                    -          -          -          -          -          -
+categories (American Revolutionary War)              -          -          -          -          -          -
+categories (Post-Napoleonic)                         -          -          -          -          -          -
+categories (Book)                                    -          -          -          -          -          -
+categories (Music)                                   -          -          -          -          -          -
+categories (Arabian)                                 -          -          -          -          -          -
+categories (Memory)                                  -          -          -          -          -          -
+categories (Modern Warfare)                          -          -          -          -          -          -
+categories (Environmental)                           -          -          -          -          -          -
+categories (Number)                                  -          -          -          -          -          -
+categories (Religious)                               -          -          -          -          -          -
+categories (Math)                                    -          -          -          -          -          -
+categories (Pike and Shot)                           -          -          -          -          -          -
+categories (Video Game Theme)                        -          -          -          -          -          -
+categories (Mature / Adult)                          -          -          -          -          -          -
+categories (Expansion for Base-game)                 -          -          -          -          -          -
+categories (Vietnam War)                             -          -          -          -          -          -
+categories (Korean War)                              -          -          -          -          -          -
+categories (Fan Expansion)                           -          -          -          -          -          -
+mechanics (Area Control / Area Influence)            -          -          -          -          -          -
+mechanics (Auction/Bidding)                          -          -          -          -          -          -
+mechanics (Dice Rolling)                             -          X          -          -          -          -
+mechanics (Hand Management)                          -          -          -          -          -          -
+mechanics (Trick-taking)                             -          -          -          -          -          -
+mechanics (Set Collection)                           -          -          -          -          -          -
+mechanics (Tile Placement)                           -          -          -          -          -          -
+mechanics (Action Point Allowance System)            -          -          -          -          -          -
+mechanics (Stock Holding)                            -          -          -          -          -          -
+mechanics (Area Enclosure)                           -          -          -          -          -          -
+mechanics (Pattern Building)                         -          -          -          -          -          -
+mechanics (Pattern Recognition)                      -          -          -          -          -          -
+mechanics (Modular Board)                            -          -          -          -          -          -
+mechanics (Card Drafting)                            -          -          -          -          -          -
+mechanics (Point to Point Movement)                  -          -          -          -          -          -
+mechanics (Route/Network Building)                   -          -          -          -          -          -
+mechanics (Trading)                                  -          -          -          -          -          -
+mechanics (Press Your Luck)                          -          -          -          -          -          -
+mechanics (Roll / Spin and Move)                     -          -          -          X          -          -
+mechanics (Simultaneous Action Selection)            -          -          -          -          -          -
+mechanics (Variable Player Powers)                   -          -          -          -          -          -
+mechanics (Action / Movement Programming)            -          -          -          -          -          -
+mechanics (Grid Movement)                            -          -          -          -          -          -
+mechanics (Partnerships)                             -          -          -          -          -          -
+mechanics (Voting)                                   -          -          -          -          -          -
+mechanics (Rock-Paper-Scissors)                      -          -          -          -          -          -
+mechanics (Role Playing)                             -          -          -          -          -          -
+mechanics (Hex-and-Counter)                          -          -          -          -          -          -
+mechanics (Variable Phase Order)                     -          -          -          -          -          -
+mechanics (Area Movement)                            -          -          -          -          -          -
+mechanics (Commodity Speculation)                    -          -          -          -          -          -
+mechanics (Co-operative Play)                        -          -          -          -          -          -
+mechanics (Betting/Wagering)                         -          -          -          -          -          -
+mechanics (Memory)                                   -          -          -          -          -          -
+mechanics (Secret Unit Deployment)                   -          -          -          -          -          -
+mechanics (Campaign / Battle Card Driven)            -          -          -          -          -          -
+mechanics (Simulation)                               -          -          -          -          -          -
+mechanics (Player Elimination)                       -          -          -          -          -          -
+mechanics (Pick-up and Deliver)                      -          -          -          -          -          -
+mechanics (Crayon Rail System)                       -          -          -          -          -          -
+mechanics (Worker Placement)                         -          -          -          -          -          -
+mechanics (Take That)                                -          -          -          -          -          -
+mechanics (Paper-and-Pencil)                         -          -          -          -          -          -
+mechanics (Line Drawing)                             -          -          -          -          -          -
+mechanics (Area-Impulse)                             -          -          -          -          -          -
+mechanics (Time Track)                               -          -          -          -          -          -
+mechanics (Chit-Pull System)                         -          -          -          -          -          -
+mechanics (Storytelling)                             -          -          -          -          -          -
+mechanics (Acting)                                   -          -          -          -          -          -
+mechanics (Singing)                                  -          -          -          -          -          -
+mechanics (Deck / Pool Building)                     -          -          -          -          -          -
+
+
+
+
+Time taken to build model (full training data) : 17.97 seconds
+
+=== Model and evaluation on training set ===
+
+Clustered Instances
+
+0       7350 ( 12%)
+1       3988 (  6%)
+2       2830 (  5%)
+3      39164 ( 63%)
+4       8872 ( 14%)
+

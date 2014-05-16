@@ -1,0 +1,84 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 1000
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R3-10,15-23,94,134
+Instances:    62204
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+mechanics (Roll / Spin and Move) = F
+|   playingtime <= 68
+|   |   categories (Wargame) = F
+|   |   |   categories (Movies / TV / Radio theme) = F
+|   |   |   |   playingtime <= 11
+|   |   |   |   |   playingtime <= 0: (1) (2542.0/1712.0)
+|   |   |   |   |   playingtime > 0: (2) (1883.0/1421.0)
+|   |   |   |   playingtime > 11
+|   |   |   |   |   categories (Children's Game) = F
+|   |   |   |   |   |   mechanics (Hand Management) = T: (4) (1731.0/1189.0)
+|   |   |   |   |   |   mechanics (Hand Management) = F
+|   |   |   |   |   |   |   min_age <= 7
+|   |   |   |   |   |   |   |   max_players <= 4: (1) (1643.0/1282.0)
+|   |   |   |   |   |   |   |   max_players > 4: (2) (1069.0/832.0)
+|   |   |   |   |   |   |   min_age > 7
+|   |   |   |   |   |   |   |   max_players <= 5
+|   |   |   |   |   |   |   |   |   max_players <= 3: (5) (1369.0/1019.0)
+|   |   |   |   |   |   |   |   |   max_players > 3: (4) (2193.0/1557.0)
+|   |   |   |   |   |   |   |   max_players > 5: (4) (2008.0/1540.0)
+|   |   |   |   |   categories (Children's Game) = T: (2) (1308.0/949.0)
+|   |   |   categories (Movies / TV / Radio theme) = T: (1) (1023.0/680.0)
+|   |   categories (Wargame) = T: (5) (1865.0/1209.0)
+|   playingtime > 68
+|   |   mechanics (Dice Rolling) = T: (5) (1167.0/629.0)
+|   |   mechanics (Dice Rolling) = F
+|   |   |   min_age <= 11: (5) (1022.0/701.0)
+|   |   |   min_age > 11
+|   |   |   |   mechanics (Hex-and-Counter) = F: (5) (1038.0/620.0)
+|   |   |   |   mechanics (Hex-and-Counter) = T: (4) (1040.0/633.0)
+mechanics (Roll / Spin and Move) = T: (1) (4541.0/2786.0)
+
+Number of Leaves  : 	16
+
+Size of the tree : 	31
+
+
+Time taken to build model: 2.66 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances       12805               31.108  %
+Incorrectly Classified Instances     28358               68.892  %
+Kappa statistic                          0.1388
+Mean absolute error                      0.3058
+Root mean squared error                  0.3912
+Relative absolute error                 95.5539 %
+Root relative squared error             97.7925 %
+Total Number of Instances            41163     
+Ignored Class Unknown Instances              21041     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.422     0.198      0.348     0.422     0.381      0.705    (5)
+                 0.374     0.248      0.274     0.374     0.316      0.685    (4)
+                 0.164     0.118      0.257     0.164     0.201      0.556    (2)
+                 0.007     0.006      0.225     0.007     0.014      0.561    (3)
+                 0.588     0.291      0.336     0.588     0.428      0.639    (1)
+Weighted Avg.    0.311     0.172      0.288     0.311     0.268      0.629
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+ 3470 2384  622   39 1717 |    a = (5)
+ 2621 3079  903   69 1561 |    b = (4)
+ 1232 1942 1352   61 3646 |    c = (2)
+ 1884 2490 1137   59 2662 |    d = (3)
+  773 1343 1238   34 4845 |    e = (1)
+

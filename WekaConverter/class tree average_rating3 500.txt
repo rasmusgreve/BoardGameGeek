@@ -1,0 +1,92 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 10 -Q 1 -M 500
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R3-10,15-23,94,134
+Instances:    62204
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+mechanics (Roll / Spin and Move) = F
+|   mechanics (Area Control / Area Influence) = T: (3) (1019.0/295.0)
+|   mechanics (Area Control / Area Influence) = F
+|   |   playingtime <= 65
+|   |   |   mechanics (Variable Player Powers) = F
+|   |   |   |   categories (Miniatures) = F
+|   |   |   |   |   categories (Movies / TV / Radio theme) = F
+|   |   |   |   |   |   categories (Wargame) = F
+|   |   |   |   |   |   |   categories (Print & Play) = F
+|   |   |   |   |   |   |   |   playingtime <= 11: (1) (5436.0/2851.0)
+|   |   |   |   |   |   |   |   playingtime > 11
+|   |   |   |   |   |   |   |   |   min_age <= 7
+|   |   |   |   |   |   |   |   |   |   categories (Educational) = F
+|   |   |   |   |   |   |   |   |   |   |   max_players <= 2: (3) (1064.0/685.0)
+|   |   |   |   |   |   |   |   |   |   |   max_players > 2
+|   |   |   |   |   |   |   |   |   |   |   |   mechanics (Dice Rolling) = T: (1) (640.0/347.0)
+|   |   |   |   |   |   |   |   |   |   |   |   mechanics (Dice Rolling) = F
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age <= 4: (1) (1659.0/989.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age > 4: (2) (1428.0/782.0)
+|   |   |   |   |   |   |   |   |   |   categories (Educational) = T: (1) (516.0/241.0)
+|   |   |   |   |   |   |   |   |   min_age > 7
+|   |   |   |   |   |   |   |   |   |   categories (Trivia) = F
+|   |   |   |   |   |   |   |   |   |   |   mechanics (Hand Management) = T
+|   |   |   |   |   |   |   |   |   |   |   |   min_age <= 9: (2) (504.0/272.0)
+|   |   |   |   |   |   |   |   |   |   |   |   min_age > 9: (3) (859.0/430.0)
+|   |   |   |   |   |   |   |   |   |   |   mechanics (Hand Management) = F
+|   |   |   |   |   |   |   |   |   |   |   |   categories (Abstract Strategy) = F
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age <= 10: (2) (3340.0/1873.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   min_age > 10
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   max_players <= 5: (3) (682.0/384.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   max_players > 5: (2) (658.0/406.0)
+|   |   |   |   |   |   |   |   |   |   |   |   categories (Abstract Strategy) = T
+|   |   |   |   |   |   |   |   |   |   |   |   |   max_players <= 2: (3) (617.0/342.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   max_players > 2: (2) (515.0/288.0)
+|   |   |   |   |   |   |   |   |   |   categories (Trivia) = T: (1) (615.0/353.0)
+|   |   |   |   |   |   |   categories (Print & Play) = T: (3) (1042.0/530.0)
+|   |   |   |   |   |   categories (Wargame) = T: (3) (1756.0/921.0)
+|   |   |   |   |   categories (Movies / TV / Radio theme) = T: (1) (1389.0/597.0)
+|   |   |   |   categories (Miniatures) = T: (3) (832.0/374.0)
+|   |   |   mechanics (Variable Player Powers) = T: (3) (1061.0/439.0)
+|   |   playingtime > 65: (3) (5405.0/2346.0)
+mechanics (Roll / Spin and Move) = T: (1) (6010.0/2473.0)
+
+Number of Leaves  : 	22
+
+Size of the tree : 	43
+
+
+Time taken to build model: 5.41 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances       20570               49.9721 %
+Incorrectly Classified Instances     20593               50.0279 %
+Kappa statistic                          0.2496
+Mean absolute error                      0.4022
+Root mean squared error                  0.4488
+Relative absolute error                 90.4921 %
+Root relative squared error             95.2068 %
+Total Number of Instances            41163     
+Ignored Class Unknown Instances              21041     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.574     0.255      0.53      0.574     0.551      0.73     (3)
+                 0.227     0.159      0.417     0.227     0.294      0.587    (2)
+                 0.697     0.336      0.509     0.697     0.588      0.64     (1)
+Weighted Avg.    0.5       0.25       0.485     0.5       0.478      0.652
+
+=== Confusion Matrix ===
+
+    a    b    c   <-- classified as
+ 7880 2378 3463 |    a = (3)
+ 4829 3121 5771 |    b = (2)
+ 2162 1990 9569 |    c = (1)
+
