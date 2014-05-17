@@ -1,0 +1,71 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 250
+Relation:     data_w_100patterns2014-05-17-weka-weka.filters.unsupervised.instance.SubsetByExpression-EATT13 > 49-weka.filters.unsupervised.attribute.Remove-R2-7,13,15-20-weka.filters.unsupervised.attribute.Discretize-F-B5-M-1.0-R7-weka.filters.unsupervised.attribute.Remove-R2
+Instances:    7553
+Attributes:   106
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+Pattern [Roll / Spin and Move] = F
+|   playingtime <= 60
+|   |   Pattern [Wargame] = F
+|   |   |   min_age <= 7: '(-inf-5.628605]' (450.9/281.79)
+|   |   |   min_age > 7
+|   |   |   |   Pattern [Hand Management] = T
+|   |   |   |   |   playingtime <= 40: '(6.13233-6.537655]' (384.31/278.58)
+|   |   |   |   |   playingtime > 40: '(6.537655-7.01621]' (289.23/210.28)
+|   |   |   |   Pattern [Hand Management] = F
+|   |   |   |   |   Pattern [max_players 6,min_players 2] = F: '(6.13233-6.537655]' (1594.37/1214.28)
+|   |   |   |   |   Pattern [max_players 6,min_players 2] = T: '(-inf-5.628605]' (254.22/176.45)
+|   |   Pattern [Wargame] = T: '(7.01621-inf)' (261.85/162.12)
+|   playingtime > 60
+|   |   Pattern [Dice Rolling] = T: '(7.01621-inf)' (451.44/226.11)
+|   |   Pattern [Dice Rolling] = F
+|   |   |   Pattern [Hex-and-Counter,min_players 2] = F: '(7.01621-inf)' (709.12/455.1)
+|   |   |   Pattern [Hex-and-Counter,min_players 2] = T: '(6.537655-7.01621]' (287.57/202.64)
+Pattern [Roll / Spin and Move] = T: '(-inf-5.628605]' (353.0/147.0)
+
+Number of Leaves  : 	10
+
+Size of the tree : 	19
+
+
+Time taken to build model: 0.21 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances        2426               32.1197 %
+Incorrectly Classified Instances      5127               67.8803 %
+Kappa statistic                          0.1515
+Mean absolute error                      0.3035
+Root mean squared error                  0.3901
+Relative absolute error                 94.8289 %
+Root relative squared error             97.5175 %
+Total Number of Instances             7553     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.347     0.109      0.443     0.347     0.389      0.695    '(-inf-5.628605]'
+                 0.191     0.134      0.263     0.191     0.222      0.586    '(5.628605-6.13233]'
+                 0.309     0.245      0.24      0.309     0.27       0.561    '(6.13233-6.537655]'
+                 0.069     0.053      0.247     0.069     0.108      0.568    '(6.537655-7.01621]'
+                 0.689     0.308      0.359     0.689     0.472      0.734    '(7.01621-inf)'
+Weighted Avg.    0.321     0.17       0.31      0.321     0.292      0.629
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+  524  245  394   52  296 |    a = '(-inf-5.628605]'
+  282  289  451   89  400 |    b = '(5.628605-6.13233]'
+  199  245  467  100  499 |    c = '(6.13233-6.537655]'
+  134  194  412  105  666 |    d = '(6.537655-7.01621]'
+   44  125  221   79 1041 |    e = '(7.01621-inf)'
+
