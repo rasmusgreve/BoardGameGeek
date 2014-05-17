@@ -1,0 +1,84 @@
+Games with number of ratings > 1000
+Equal depth bins på ratings efter filtrering. 10 bins
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 30
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.instance.SubsetByExpression-EATT15>1000-weka.filters.unsupervised.attribute.Discretize-F-B10-M-1.0-R16-weka.filters.unsupervised.attribute.Remove-R2-10,15,17-23,94,134
+Instances:    1056
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+mechanics (Worker Placement) = F
+|   mechanics (Roll / Spin and Move) = F
+|   |   playingtime <= 60
+|   |   |   min_age <= 7: '(-inf-6.162755]' (38.09/22.09)
+|   |   |   min_age > 7
+|   |   |   |   playingtime <= 20: '(6.162755-6.445305]' (50.91/35.91)
+|   |   |   |   playingtime > 20
+|   |   |   |   |   min_age <= 12
+|   |   |   |   |   |   max_players <= 5
+|   |   |   |   |   |   |   mechanics (Variable Player Powers) = F: '(6.445305-6.59797]' (180.0/151.0)
+|   |   |   |   |   |   |   mechanics (Variable Player Powers) = T: '(7.212015-7.435405]' (32.0/24.0)
+|   |   |   |   |   |   max_players > 5: '(6.162755-6.445305]' (73.0/60.0)
+|   |   |   |   |   min_age > 12: '(7.435405-7.649755]' (36.0/27.0)
+|   |   playingtime > 60
+|   |   |   min_age <= 12
+|   |   |   |   categories (Wargame) = F: '(7.212015-7.435405]' (113.54/92.54)
+|   |   |   |   categories (Wargame) = T: '(7.649755-inf)' (44.54/32.77)
+|   |   |   min_age > 12: '(7.649755-inf)' (46.92/28.69)
+|   mechanics (Roll / Spin and Move) = T: '(-inf-6.162755]' (42.0/26.0)
+mechanics (Worker Placement) = T: '(7.435405-7.649755]' (47.0/35.0)
+
+Number of Leaves  : 	11
+
+Size of the tree : 	21
+
+
+Time taken to build model: 0.08 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         186               17.6136 %
+Incorrectly Classified Instances       870               82.3864 %
+Kappa statistic                          0.0846
+Mean absolute error                      0.1741
+Root mean squared error                  0.298 
+Relative absolute error                 96.7229 %
+Root relative squared error             99.331  %
+Total Number of Instances             1056     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.462     0.124      0.293     0.462     0.359      0.732    '(-inf-6.162755]'
+                 0.057     0.072      0.081     0.057     0.067      0.619    '(6.162755-6.445305]'
+                 0.292     0.191      0.146     0.292     0.195      0.596    '(6.445305-6.59797]'
+                 0.095     0.084      0.111     0.095     0.103      0.534    '(6.59797-6.760055]'
+                 0.019     0.041      0.049     0.019     0.027      0.526    '(6.760055-6.921815]'
+                 0.01      0.021      0.048     0.01      0.016      0.452    '(6.921815-7.04219]'
+                 0.038     0.04       0.095     0.038     0.054      0.524    '(7.04219-7.212015]'
+                 0.143     0.057      0.217     0.143     0.172      0.663    '(7.212015-7.435405]'
+                 0.085     0.049      0.161     0.085     0.111      0.658    '(7.435405-7.649755]'
+                 0.562     0.237      0.208     0.562     0.303      0.722    '(7.649755-inf)'
+Weighted Avg.    0.176     0.092      0.141     0.176     0.141      0.603
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f  g  h  i  j   <-- classified as
+ 49 10 15  6  3  1  3  0  5 14 |  a = '(-inf-6.162755]'
+ 26  6 33 13  6  2  1  3  3 13 |  b = '(6.162755-6.445305]'
+ 13 13 31  7  7  4  5  3  3 20 |  c = '(6.445305-6.59797]'
+ 16 11 26 10  2  2  5  6  7 20 |  d = '(6.59797-6.760055]'
+ 19  9 24 15  2  2  4  5  6 20 |  e = '(6.760055-6.921815]'
+ 15  8 23  6  3  1  6 13  3 27 |  f = '(6.921815-7.04219]'
+  9  7 18 10 10  3  4 10  7 28 |  g = '(7.04219-7.212015]'
+  5  6 17 11  2  3  6 15  5 35 |  h = '(7.212015-7.435405]'
+  8  3 15  9  3  2  2  7  9 48 |  i = '(7.435405-7.649755]'
+  7  1 10  3  3  1  6  7  8 59 |  j = '(7.649755-inf)'

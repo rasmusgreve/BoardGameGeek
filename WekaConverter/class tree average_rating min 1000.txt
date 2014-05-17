@@ -1,0 +1,79 @@
+Games with number of ratings > 1000
+
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 10
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R9-10-weka.filters.unsupervised.instance.SubsetByExpression-EATT13>1000-weka.filters.unsupervised.attribute.Remove-R3-8,13-21,92,132
+Instances:    1056
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+categories (Children's Game) = F
+|   mechanics (Take That) = F
+|   |   categories (Party Game) = F
+|   |   |   categories (Humor) = F
+|   |   |   |   categories (Pirates) = F
+|   |   |   |   |   mechanics (Stock Holding) = F
+|   |   |   |   |   |   categories (Video Game Theme) = F
+|   |   |   |   |   |   |   min_age <= 8
+|   |   |   |   |   |   |   |   mechanics (Card Drafting) = F
+|   |   |   |   |   |   |   |   |   mechanics (Grid Movement) = F
+|   |   |   |   |   |   |   |   |   |   mechanics (Area Control / Area Influence) = T: (3) (14.0/1.0)
+|   |   |   |   |   |   |   |   |   |   mechanics (Area Control / Area Influence) = F
+|   |   |   |   |   |   |   |   |   |   |   mechanics (Tile Placement) = F
+|   |   |   |   |   |   |   |   |   |   |   |   playingtime <= 15: (2) (14.0/6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   playingtime > 15: (3) (63.0/12.0)
+|   |   |   |   |   |   |   |   |   |   |   mechanics (Tile Placement) = T: (3) (15.0/7.0)
+|   |   |   |   |   |   |   |   |   mechanics (Grid Movement) = T: (3) (11.0/3.0)
+|   |   |   |   |   |   |   |   mechanics (Card Drafting) = T: (3) (14.0/2.0)
+|   |   |   |   |   |   |   min_age > 8: (3) (442.0/35.0)
+|   |   |   |   |   |   categories (Video Game Theme) = T: (3) (14.0/5.0)
+|   |   |   |   |   mechanics (Stock Holding) = T: (3) (13.0/1.0)
+|   |   |   |   categories (Pirates) = T: (3) (11.0/5.0)
+|   |   |   categories (Humor) = T: (3) (18.0/8.0)
+|   |   categories (Party Game) = T: (3) (40.0/16.0)
+|   mechanics (Take That) = T: (2) (11.0/4.0)
+categories (Children's Game) = T
+|   min_age <= 6: (1) (14.0/6.0)
+|   min_age > 6: (3) (10.0/5.0)
+
+Number of Leaves  : 	15
+
+Size of the tree : 	29
+
+
+Time taken to build model: 0.16 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         869               82.2917 %
+Incorrectly Classified Instances       187               17.7083 %
+Kappa statistic                          0.04  
+Mean absolute error                      0.1879
+Root mean squared error                  0.3116
+Relative absolute error                 94.9697 %
+Root relative squared error             99.2397 %
+Total Number of Instances             1056     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.991     0.968      0.828     0.991     0.902      0.584    (3)
+                 0.031     0.007      0.455     0.031     0.058      0.568    (2)
+                 0.043     0.002      0.333     0.043     0.077      0.696    (1)
+Weighted Avg.    0.823     0.799      0.76      0.823     0.755      0.584
+
+=== Confusion Matrix ===
+
+   a   b   c   <-- classified as
+ 863   6   2 |   a = (3)
+ 157   5   0 |   b = (2)
+  22   0   1 |   c = (1)
+
