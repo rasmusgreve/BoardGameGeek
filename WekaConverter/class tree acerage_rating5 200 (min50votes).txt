@@ -1,0 +1,73 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 200
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R94,134-weka.filters.unsupervised.instance.SubsetByExpression-EATT15>49-weka.filters.unsupervised.attribute.Discretize-F-B5-M-1.0-R16-weka.filters.unsupervised.attribute.Remove-R2-8,10,15,17-23-weka.filters.unsupervised.attribute.Remove-R2
+Instances:    7553
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+mechanics (Roll / Spin and Move) = F
+|   categories (Children's Game) = F
+|   |   playingtime <= 60
+|   |   |   categories (Wargame) = F
+|   |   |   |   mechanics (Variable Player Powers) = F
+|   |   |   |   |   mechanics (Card Drafting) = F
+|   |   |   |   |   |   playingtime <= 30
+|   |   |   |   |   |   |   mechanics (Hand Management) = T: '(6.13233-6.537655]' (287.29/200.52)
+|   |   |   |   |   |   |   mechanics (Hand Management) = F
+|   |   |   |   |   |   |   |   categories (Abstract Strategy) = F: '(-inf-5.628605]' (756.09/540.67)
+|   |   |   |   |   |   |   |   categories (Abstract Strategy) = T: '(5.628605-6.13233]' (235.05/172.29)
+|   |   |   |   |   |   playingtime > 30
+|   |   |   |   |   |   |   max_players <= 5: '(6.13233-6.537655]' (645.58/474.27)
+|   |   |   |   |   |   |   max_players > 5: '(-inf-5.628605]' (336.49/249.99)
+|   |   |   |   |   mechanics (Card Drafting) = T: '(6.537655-7.01621]' (220.02/165.02)
+|   |   |   |   mechanics (Variable Player Powers) = T: '(7.01621-inf)' (250.04/185.37)
+|   |   |   categories (Wargame) = T: '(7.01621-inf)' (260.0/160.8)
+|   |   playingtime > 60: '(7.01621-inf)' (1449.44/904.03)
+|   categories (Children's Game) = T: '(-inf-5.628605]' (243.0/141.0)
+mechanics (Roll / Spin and Move) = T: '(-inf-5.628605]' (353.0/147.0)
+
+Number of Leaves  : 	11
+
+Size of the tree : 	21
+
+
+Time taken to build model: 0.44 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances        2446               32.3845 %
+Incorrectly Classified Instances      5107               67.6155 %
+Kappa statistic                          0.1548
+Mean absolute error                      0.3024
+Root mean squared error                  0.3895
+Relative absolute error                 94.5063 %
+Root relative squared error             97.3866 %
+Total Number of Instances             7553     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.416     0.155      0.401     0.416     0.408      0.709    '(-inf-5.628605]'
+                 0.293     0.218      0.251     0.293     0.27       0.587    '(5.628605-6.13233]'
+                 0.12      0.087      0.256     0.12      0.163      0.559    '(6.13233-6.537655]'
+                 0.067     0.05       0.249     0.067     0.105      0.578    '(6.537655-7.01621]'
+                 0.725     0.334      0.351     0.725     0.473      0.737    '(7.01621-inf)'
+Weighted Avg.    0.324     0.169      0.302     0.324     0.284      0.634
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+  628  414  141   44  284 |    a = '(-inf-5.628605]'
+  379  442  158   80  452 |    b = '(5.628605-6.13233]'
+  278  412  181   98  541 |    c = '(6.13233-6.537655]'
+  201  320  147  101  742 |    d = '(6.537655-7.01621]'
+   79  173   81   83 1094 |    e = '(7.01621-inf)'
+

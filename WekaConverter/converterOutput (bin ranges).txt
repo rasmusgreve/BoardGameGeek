@@ -1,0 +1,56 @@
+* Loading CSV-file (data_w_right_ratings2014-05-02.csv)...
+* Parsing data...
+Parsing 62205 lines
+* Discretize numeric values
+        Binning "average_rating":
+                Bin 1: 1 to 4,5
+                Bin 2: 4,5 to 5,5
+                Bin 3: 5,5 to 6,12505
+                Bin 4: 6,12539 to 7
+                Bin 5: 7 to 10
+        Binning "rating_stddev":
+                Bin 1: 0 to 0
+                Bin 2: 0 to 0
+                Bin 3: 0 to 0,960143
+                Bin 4: 0,960143 to 1,48113
+                Bin 5: 1,48114 to 4,5
+        Binning "year_published":
+                Bin 1: -3500 to 1970
+                Bin 2: 1970 to 1983
+                Bin 3: 1983 to 1990
+                Bin 4: 1990 to 1997
+                Bin 5: 1997 to 2002
+                Bin 6: 2002 to 2005
+                Bin 7: 2005 to 2007
+                Bin 8: 2007 to 2010
+                Bin 9: 2010 to 2012
+                Bin 10: 2012 to 2016
+        Binning "min_players":
+                Bin 1: 1 to 2
+                Bin 2: 2 to 2
+                Bin 3: 2 to 50
+        Binning "max_players":
+                Bin 1: 1 to 2
+                Bin 2: 2 to 4
+                Bin 3: 4 to 5
+                Bin 4: 5 to 6
+                Bin 5: 6 to 11299
+        Binning "playingtime":
+                Bin 1: 1 to 15
+                Bin 2: 15 to 20
+                Bin 3: 20 to 30
+                Bin 4: 30 to 45
+                Bin 5: 45 to 60
+                Bin 6: 60 to 90
+                Bin 7: 90 to 60000
+        Binning "num_owned":
+                Bin 1: 0 to 1
+                Bin 2: 1 to 2
+                Bin 3: 2 to 8
+                Bin 4: 8 to 41
+                Bin 5: 41 to 59112
+* Adding extra parameters
+* Expanding arrays to boolean parameters...
+* Writing games to Weka CSV-file (data_w_right_ratings2014-05-02-weka.csv)...
+
+DONE

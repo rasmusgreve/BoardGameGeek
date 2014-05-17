@@ -1,0 +1,77 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -R -N 3 -Q 1 -M 150
+Relation:     data_w_right_ratings2014-05-02-weka-weka.filters.unsupervised.attribute.Remove-R94,134-weka.filters.unsupervised.instance.SubsetByExpression-EATT15>49-weka.filters.unsupervised.attribute.Discretize-F-B5-M-1.0-R16-weka.filters.unsupervised.attribute.Remove-R2-8,10,15,17-23-weka.filters.unsupervised.attribute.Remove-R2
+Instances:    7553
+Attributes:   141
+[list of attributes omitted]
+Test mode:10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+mechanics (Roll / Spin and Move) = F
+|   categories (Children's Game) = F
+|   |   playingtime <= 60
+|   |   |   categories (Wargame) = F
+|   |   |   |   mechanics (Area Control / Area Influence) = T: '(6.537655-7.01621]' (153.35/101.35)
+|   |   |   |   mechanics (Area Control / Area Influence) = F
+|   |   |   |   |   mechanics (Variable Player Powers) = F
+|   |   |   |   |   |   mechanics (Card Drafting) = F
+|   |   |   |   |   |   |   mechanics (Modular Board) = F
+|   |   |   |   |   |   |   |   mechanics (Hand Management) = T: '(6.13233-6.537655]' (431.04/311.69)
+|   |   |   |   |   |   |   |   mechanics (Hand Management) = F
+|   |   |   |   |   |   |   |   |   mechanics (Tile Placement) = F
+|   |   |   |   |   |   |   |   |   |   categories (Abstract Strategy) = F
+|   |   |   |   |   |   |   |   |   |   |   min_age <= 10: '(-inf-5.628605]' (860.16/608.62)
+|   |   |   |   |   |   |   |   |   |   |   min_age > 10: '(5.628605-6.13233]' (324.54/226.75)
+|   |   |   |   |   |   |   |   |   |   categories (Abstract Strategy) = T: '(6.13233-6.537655]' (188.04/141.37)
+|   |   |   |   |   |   |   |   |   mechanics (Tile Placement) = T: '(6.13233-6.537655]' (184.02/126.02)
+|   |   |   |   |   |   |   mechanics (Modular Board) = T: '(6.537655-7.01621]' (157.35/118.35)
+|   |   |   |   |   |   mechanics (Card Drafting) = T: '(7.01621-inf)' (201.02/152.67)
+|   |   |   |   |   mechanics (Variable Player Powers) = T: '(6.537655-7.01621]' (231.04/175.37)
+|   |   |   categories (Wargame) = T: '(7.01621-inf)' (260.0/160.8)
+|   |   playingtime > 60: '(7.01621-inf)' (1449.44/904.03)
+|   categories (Children's Game) = T: '(-inf-5.628605]' (243.0/141.0)
+mechanics (Roll / Spin and Move) = T: '(-inf-5.628605]' (353.0/147.0)
+
+Number of Leaves  : 	13
+
+Size of the tree : 	25
+
+
+Time taken to build model: 0.51 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances        2487               32.9273 %
+Incorrectly Classified Instances      5066               67.0727 %
+Kappa statistic                          0.1616
+Mean absolute error                      0.3005
+Root mean squared error                  0.3886
+Relative absolute error                 93.9201 %
+Root relative squared error             97.1466 %
+Total Number of Instances             7553     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.403     0.15       0.403     0.403     0.403      0.719    '(-inf-5.628605]'
+                 0.308     0.223      0.256     0.308     0.28       0.597    '(5.628605-6.13233]'
+                 0.177     0.129      0.256     0.177     0.21       0.563    '(6.13233-6.537655]'
+                 0.073     0.049      0.272     0.073     0.115      0.581    '(6.537655-7.01621]'
+                 0.685     0.288      0.373     0.685     0.483      0.751    '(7.01621-inf)'
+Weighted Avg.    0.329     0.168      0.312     0.329     0.298      0.642
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+  609  444  182   46  230 |    a = '(-inf-5.628605]'
+  366  465  244   69  367 |    b = '(5.628605-6.13233]'
+  268  412  268   85  477 |    c = '(6.13233-6.537655]'
+  198  309  228  110  666 |    d = '(6.537655-7.01621]'
+   72  183  126   94 1035 |    e = '(7.01621-inf)'
+
